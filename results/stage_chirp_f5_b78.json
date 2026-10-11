@@ -1,0 +1,156 @@
+{
+  "reference": "torchaudio.compliance.kaldi (NOT official Kaldi binary)",
+  "torch_version": "2.10.0+cpu",
+  "torchaudio_version": "2.10.0+cpu",
+  "torch_num_threads": 8,
+  "signal": "chirp",
+  "frame_index_zero_based": 5,
+  "frame_start_sample": 800,
+  "input": "float32 samples, unnormalized PCM-count amplitude",
+  "cpp_trace_matches_csv_max_abs": 0,
+  "stages": {
+    "float32": {
+      "torchaudio_stage_reconstruction_vs_public_max_abs": 0,
+      "comparison": {
+        "after_preemphasis": {
+          "size": 400,
+          "max_abs": 0.0002860151289496571,
+          "mae": 0.000054391691222264175,
+          "rmse": 0.00007518733640793406,
+          "worst_index": 301,
+          "cpp_at_worst": 53.30159386768355,
+          "reference_at_worst": 53.3018798828125,
+          "absolute_relative_error_at_worst": 0.000005365948247575492
+        },
+        "windowed_padded": {
+          "size": 512,
+          "max_abs": 0.000210632309091352,
+          "mae": 0.000026039614526175243,
+          "rmse": 0.000045016198091833536,
+          "worst_index": 150,
+          "cpp_at_worst": 160.13819586180128,
+          "reference_at_worst": 160.1379852294922,
+          "absolute_relative_error_at_worst": 0.0000013153175918224329
+        },
+        "power_spectrum": {
+          "size": 257,
+          "max_abs": 53.17084586620331,
+          "mae": 0.4575418786014393,
+          "rmse": 4.337640635918756,
+          "worst_index": 13,
+          "cpp_at_worst": 653294773.1708459,
+          "reference_at_worst": 653294720,
+          "absolute_relative_error_at_worst": 8.13887579960899e-8
+        },
+        "mel_energy": {
+          "size": 80,
+          "max_abs": 1431.6447380781174,
+          "mae": 35.750506196032056,
+          "rmse": 193.5794493626774,
+          "worst_index": 13,
+          "cpp_at_worst": 668503848.3552619,
+          "reference_at_worst": 668505280,
+          "absolute_relative_error_at_worst": 0.000002141560853607794
+        },
+        "log_fbank": {
+          "size": 80,
+          "max_abs": 0.43239440514943794,
+          "mae": 0.02398950556735988,
+          "rmse": 0.07616421026680438,
+          "worst_index": 78,
+          "cpp_at_worst": -10.721138377927758,
+          "reference_at_worst": -10.28874397277832,
+          "absolute_relative_error_at_worst": 0.042025966074523316
+        }
+      },
+      "target_band": {
+        "band_index_zero_based": 78,
+        "cpp_energy": 0.00002207337608027254,
+        "reference_energy": 0.00003401381763978861,
+        "floor": 1.1920928955078125e-7,
+        "energy_ratio_cpp_over_reference": 0.6489532081941779,
+        "cpp_log_energy": -10.721138377927758,
+        "reference_log_energy": -10.28874397277832,
+        "predicted_log_difference_from_energy_ratio_and_floor": -0.43239466319131026,
+        "actual_log_difference": -0.43239440514943794
+      }
+    },
+    "float64": {
+      "torchaudio_stage_reconstruction_vs_public_max_abs": 0,
+      "comparison": {
+        "after_preemphasis": {
+          "size": 400,
+          "max_abs": 0,
+          "mae": 0,
+          "rmse": 0,
+          "worst_index": 0,
+          "cpp_at_worst": -63.29325232372298,
+          "reference_at_worst": -63.29325232372298,
+          "absolute_relative_error_at_worst": 0
+        },
+        "windowed_padded": {
+          "size": 512,
+          "max_abs": 1.4210854715202004e-13,
+          "mae": 7.233552949334476e-15,
+          "rmse": 2.358005021027675e-14,
+          "worst_index": 273,
+          "cpp_at_worst": 211.75684775475207,
+          "reference_at_worst": 211.75684775475221,
+          "absolute_relative_error_at_worst": 6.710930421320029e-16
+        },
+        "power_spectrum": {
+          "size": 257,
+          "max_abs": 4.76837158203125e-7,
+          "mae": 2.77724416722339e-9,
+          "rmse": 3.186594340502569e-8,
+          "worst_index": 12,
+          "cpp_at_worst": 1154622377.0068913,
+          "reference_at_worst": 1154622377.0068908,
+          "absolute_relative_error_at_worst": 4.129810470495318e-16
+        },
+        "mel_energy": {
+          "size": 80,
+          "max_abs": 1498.607801437378,
+          "mae": 37.571294485124135,
+          "rmse": 203.53458132351773,
+          "worst_index": 13,
+          "cpp_at_worst": 668503848.3552619,
+          "reference_at_worst": 668505346.9630634,
+          "absolute_relative_error_at_worst": 0.0000022417289678315464
+        },
+        "log_fbank": {
+          "size": 80,
+          "max_abs": 0.000008431258439856038,
+          "mae": 0.000002320710847142013,
+          "rmse": 0.000002929854722888995,
+          "worst_index": 39,
+          "cpp_at_worst": -1.1814934968295443,
+          "reference_at_worst": -1.1814850655711044,
+          "absolute_relative_error_at_worst": 0.000007136153207133895
+        }
+      },
+      "target_band": {
+        "band_index_zero_based": 78,
+        "cpp_energy": 0.00002207337608027254,
+        "reference_energy": 0.000022073251251100783,
+        "floor": 1.1920928955078125e-7,
+        "energy_ratio_cpp_over_reference": 1.0000056552236158,
+        "cpp_log_energy": -10.721138377927758,
+        "reference_log_energy": -10.721144033135385,
+        "predicted_log_difference_from_energy_ratio_and_floor": 0.000005655207626631409,
+        "actual_log_difference": 0.000005655207626631409
+      }
+    }
+  },
+  "target_mel_band": 78,
+  "precision_crossover_energy_target_band": {
+    "note": "All mel integration here uses exactly the same torchaudio-generated float32 mel weights promoted to float64 and a float64 dot-product.",
+    "cpp_power_double_accum": 0.00002207325125073391,
+    "torch_ref32_power_double_accum": 0.00003401381732696409,
+    "torch_ref64_power_double_accum": 0.000022073251251100786,
+    "torch_float32_window_refft_float64": 0.00003193993219670991,
+    "torch_float64_window_refft_float32": 0.000025167056583449113,
+    "cpp_window_cast_float32_refft_float32": 0.000025167056583449113,
+    "cpp_window_refft_float64": 0.000022073251248905216
+  }
+}

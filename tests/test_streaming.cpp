@@ -75,7 +75,35 @@ int main() {
     for (auto v : feature) CHECK(std::isfinite(v));
     f.Reset();
     CHECK(f.NumFramesReady() == 0 && f.FramesProduced() == 0);
-    std::cout << "PASS: edge-length framing, 8 chunk patterns, frame count, reset, silence\n";
+
+    // Debug tracing must not change any feature values or frame ordering.
+    Extractor traced, plain;
+    traced.CaptureStageTraceAt(1);
+    CHECK(!traced.HasStageTrace());
+    bool no_trace = false;
+    try { traced.GetStageTrace(); } catch (const std::out_of_range&) { no_trace = true; }
+    CHECK(no_trace);
+    std::vector<float> tracing_pcm(1000);
+    for (std::size_t n = 0; n < tracing_pcm.size(); ++n)
+      tracing_pcm[n] = static_cast<float>(900 * std::sin(2.0 * pi * 1300 * n / 16000));
+    traced.AcceptWaveform(tracing_pcm.data(), tracing_pcm.size());
+    plain.AcceptWaveform(tracing_pcm.data(), tracing_pcm.size());
+    CHECK(traced.HasStageTrace());
+    CHECK(traced.NumFramesReady() == plain.NumFramesReady());
+    const auto& trace = traced.GetStageTrace();
+    for (std::size_t frame = 0; frame < plain.FramesProduced(); ++frame) {
+      const auto expected = plain.GetFrame();
+      const auto observed = traced.GetFrame();
+      for (std::size_t b = 0; b < observed.size(); ++b) {
+        CHECK(observed[b] == expected[b]);
+        if (frame == 1) CHECK(observed[b] == trace.log_fbank[b]);
+      }
+    }
+    for (double e : trace.mel_energy) CHECK(e >= 0 && std::isfinite(e));
+    for (double x : trace.windowed_padded) CHECK(std::isfinite(x));
+    traced.Reset();
+    CHECK(!traced.HasStageTrace());
+    std::cout << "PASS: edge-length framing, 8 chunk patterns, frame count, trace isolation, reset, silence\n";
     return 0;
   } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

@@ -1,0 +1,156 @@
+{
+  "reference": "torchaudio.compliance.kaldi (NOT official Kaldi binary)",
+  "torch_version": "2.10.0+cpu",
+  "torchaudio_version": "2.10.0+cpu",
+  "torch_num_threads": 8,
+  "signal": "multitone",
+  "frame_index_zero_based": 109,
+  "frame_start_sample": 17440,
+  "input": "float32 samples, unnormalized PCM-count amplitude",
+  "cpp_trace_matches_csv_max_abs": 0,
+  "stages": {
+    "float32": {
+      "torchaudio_stage_reconstruction_vs_public_max_abs": 0,
+      "comparison": {
+        "after_preemphasis": {
+          "size": 400,
+          "max_abs": 0.00037767157573398435,
+          "mae": 0.00006966037449172902,
+          "rmse": 0.0000960087795429156,
+          "worst_index": 203,
+          "cpp_at_worst": 294.87071607842427,
+          "reference_at_worst": 294.87109375,
+          "absolute_relative_error_at_worst": 0.0000012808023022228992
+        },
+        "windowed_padded": {
+          "size": 512,
+          "max_abs": 0.0003773367001826955,
+          "mae": 0.000036299927802705106,
+          "rmse": 0.00006082774135669967,
+          "worst_index": 203,
+          "cpp_at_worst": 294.6804087961123,
+          "reference_at_worst": 294.6807861328125,
+          "absolute_relative_error_at_worst": 0.000001280493055331507
+        },
+        "power_spectrum": {
+          "size": 257,
+          "max_abs": 586.1422367095947,
+          "mae": 6.272650499430079,
+          "rmse": 46.9291355889028,
+          "worst_index": 33,
+          "cpp_at_worst": 5112490933.857763,
+          "reference_at_worst": 5112491520,
+          "absolute_relative_error_at_worst": 1.1464903842218886e-7
+        },
+        "mel_energy": {
+          "size": 80,
+          "max_abs": 6469.33212518692,
+          "mae": 373.3401542983809,
+          "rmse": 1356.2036679164298,
+          "worst_index": 48,
+          "cpp_at_worst": 2441508933.332125,
+          "reference_at_worst": 2441502464,
+          "absolute_relative_error_at_worst": 0.0000026497340144346953
+        },
+        "log_fbank": {
+          "size": 80,
+          "max_abs": 0.05569372028122377,
+          "mae": 0.001771317003194781,
+          "rmse": 0.007515986550835284,
+          "worst_index": 79,
+          "cpp_at_worst": -7.394420717656712,
+          "reference_at_worst": -7.338726997375488,
+          "absolute_relative_error_at_worst": 0.007589016501246228
+        }
+      },
+      "target_band": {
+        "band_index_zero_based": 79,
+        "cpp_energy": 0.0006146726442424793,
+        "reference_energy": 0.0006498773000203073,
+        "floor": 1.1920928955078125e-7,
+        "energy_ratio_cpp_over_reference": 0.9458287652504127,
+        "cpp_log_energy": -7.394420717656712,
+        "reference_log_energy": -7.338726997375488,
+        "predicted_log_difference_from_energy_ratio_and_floor": -0.05569373556344548,
+        "actual_log_difference": -0.05569372028122377
+      }
+    },
+    "float64": {
+      "torchaudio_stage_reconstruction_vs_public_max_abs": 0,
+      "comparison": {
+        "after_preemphasis": {
+          "size": 400,
+          "max_abs": 0,
+          "mae": 0,
+          "rmse": 0,
+          "worst_index": 0,
+          "cpp_at_worst": -52.43846727118512,
+          "reference_at_worst": -52.43846727118512,
+          "absolute_relative_error_at_worst": 0
+        },
+        "windowed_padded": {
+          "size": 512,
+          "max_abs": 5.684341886080801e-13,
+          "mae": 1.719848222170306e-14,
+          "rmse": 6.000228829701162e-14,
+          "worst_index": 315,
+          "cpp_at_worst": 534.0017507787268,
+          "reference_at_worst": 534.0017507787273,
+          "absolute_relative_error_at_worst": 1.0644800092492964e-15
+        },
+        "power_spectrum": {
+          "size": 257,
+          "max_abs": 0.000001430511474609375,
+          "mae": 2.135006963076729e-8,
+          "rmse": 1.3805975575907532e-7,
+          "worst_index": 32,
+          "cpp_at_worst": 2222749881.157034,
+          "reference_at_worst": 2222749881.1570354,
+          "absolute_relative_error_at_worst": 6.435773483720685e-16
+        },
+        "mel_energy": {
+          "size": 80,
+          "max_abs": 6617.332143306732,
+          "mae": 381.04038020331274,
+          "rmse": 1375.8320278873844,
+          "worst_index": 48,
+          "cpp_at_worst": 2441508933.332125,
+          "reference_at_worst": 2441502315.999982,
+          "absolute_relative_error_at_worst": 0.0000027103525972271825
+        },
+        "log_fbank": {
+          "size": 80,
+          "max_abs": 0.00009303001460558846,
+          "mae": 0.000004792105340183442,
+          "rmse": 0.000011835937551098395,
+          "worst_index": 50,
+          "cpp_at_worst": 15.272996399696929,
+          "reference_at_worst": 15.273089429711534,
+          "absolute_relative_error_at_worst": 0.000006091106519982286
+        }
+      },
+      "target_band": {
+        "band_index_zero_based": 79,
+        "cpp_energy": 0.0006146726442424793,
+        "reference_energy": 0.0006146780412027294,
+        "floor": 1.1920928955078125e-7,
+        "energy_ratio_cpp_over_reference": 0.9999912198583838,
+        "cpp_log_energy": -7.394420717656712,
+        "reference_log_energy": -7.39441193747655,
+        "predicted_log_difference_from_energy_ratio_and_floor": -0.000008780180162482054,
+        "actual_log_difference": -0.000008780180162482054
+      }
+    }
+  },
+  "target_mel_band": 79,
+  "precision_crossover_energy_target_band": {
+    "note": "All mel integration here uses exactly the same torchaudio-generated float32 mel weights promoted to float64 and a float64 dot-product.",
+    "cpp_power_double_accum": 0.0006146780411477009,
+    "torch_ref32_power_double_accum": 0.0006498773302049185,
+    "torch_ref64_power_double_accum": 0.0006146780412027295,
+    "torch_float32_window_refft_float64": 0.0006330078580175146,
+    "torch_float64_window_refft_float32": 0.0005876554187379979,
+    "cpp_window_cast_float32_refft_float32": 0.0005876554187379979,
+    "cpp_window_refft_float64": 0.0006146780412578945
+  }
+}

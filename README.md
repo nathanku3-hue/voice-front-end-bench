@@ -14,7 +14,7 @@ A small, reviewable experiment for a speech-algorithm interview: implement Kaldi
 
 ## Build (Linux)
 
-Prerequisites: CMake >= 3.16, C++17 compiler, and FFTW3 (`sudo apt-get install cmake g++ libfftw3-dev`). Tested under Debian Linux with GCC 14.2 / CMake and installed FFTW3 runtime shared library. Windows native builds have **not** been validated; supply FFTW3 library and a C++17 toolchain before trying to build there.
+Prerequisites: CMake >= 3.16, C++17 compiler, and FFTW3 (`sudo apt-get install cmake g++ libfftw3-dev`). The original baseline was tested under isolated Debian Linux / GCC 14.2; **the code was subsequently built and tested on the host in Ubuntu 24.04 / WSL2, GCC 13.3.0, CMake 3.28.3, FFTW3 3.3.10**. On Windows this source folder is accessible from WSL as `/mnt/e/Code/voice`. A native Windows/MSVC build has **not** been validated.
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -22,13 +22,19 @@ cmake --build build -j
 ctest --test-dir build --output-on-failure
 ```
 
-Numerical reference additionally requires Python 3, NumPy, PyTorch and torchaudio of compatible versions:
+Numerical reference additionally requires Python 3, NumPy, CPU PyTorch and torchaudio of compatible versions. The host WSL run used an isolated Python 3.12 venv under `~/.venvs/voice-bench` and `torch==2.10.0+cpu`, `torchaudio==2.10.0+cpu`, `numpy==2.3.5`:
 
 ```bash
-python scripts/kaldi_compare.py --binary build/fbank_dump
+python scripts/kaldi_compare.py --binary build/fbank_dump --output results/kaldi_parity_wsl.json
+python scripts/stage_diagnostics.py --binary build/fbank_dump --signal chirp --frame 5 --band 78 \
+  --output results/stage_chirp_f5_b78.json --keep-npy-dir build/chirp_trace
+python scripts/stage_diagnostics.py --binary build/fbank_dump --signal multitone --frame 109 --band 79 \
+  --output results/stage_multitone_f109_b79.json
 ```
 
-The script writes measured results to `results/kaldi_compatible_parity.json`. Its four reproducible synthetic cases are multi-tone, noisy, chirp and silence; signal values are **Kaldi-style PCM counts stored as float32**, not normalized [-1, 1] samples. No private datasets or ASR models are needed.
+Use `~/.venvs/voice-bench/bin/python` in place of `python` if the venv is not activated. The parity script tests synthetic multi-tone, noisy, chirp and silence cases; signals are **Kaldi-style PCM counts stored as float32**, not normalized [-1, 1] samples. The `--keep-npy-dir` option retains five debug arrays (post-preemphasis, windowed, FFT power, Mel energy, log-Fbank). No private datasets or ASR models are needed.
+
+The earlier isolated-environment measurements are preserved in `results/kaldi_compatible_parity.json`; the **host WSL2** measurements are separately recorded in [`results/kaldi_parity_wsl.json`](results/kaldi_parity_wsl.json). Do not conflate these slightly different numerical runtimes.
 
 ## Streaming API
 
@@ -49,9 +55,10 @@ No explicit padding is performed at EOF. For 16,000 samples, `snip_edges=true` p
 |---|---|---|
 | Chunk invariance | CTest `streaming_invariance` compares whole input to 1, 128, 160, 240, 300, 1024 and seeded irregular block sizes, including 399/400/560 sample edges | Verifies deterministic framing/output order under different packet boundaries; not a multi-thread real-time guarantee |
 | Numerical reference | `scripts/kaldi_compare.py` reports MAE/RMSE/max error vs torchaudio in float32 and float64 | Verification against an external, Kaldi-compatible implementation, **not** official Kaldi binary or bitwise matching |
-| Linux build | CMake/GCC/CTests and full command lines | Toolchain integration, not a Windows or embedded platform certification |
+| Linux build | CMake/GCC/CTests and full command lines, including local WSL2 | Toolchain integration, not a native Windows or embedded platform certification |
+| Opt-in stage tracing | CLI `--dump-stage` and `scripts/stage_diagnostics.py` | Isolates rounding differences by numerical stage; proves no product ASR improvement |
 
-The precision audit's concrete numbers, outliers, environment, and reproduction steps are in [`docs/EXPERIMENT_REPORT.md`](docs/EXPERIMENT_REPORT.md). No arbitrary `1e-5` target is claimed. If float32 reference errors rise on low-energy chirp bins, report them rather than filtering them out.
+The precision audit's concrete numbers, outliers, WSL2 build verification, and stage-wise crossovers are in [`docs/EXPERIMENT_REPORT.md`](docs/EXPERIMENT_REPORT.md). No arbitrary `1e-5` target is claimed. The low-energy Float32 mismatch is **not caused by an active log floor** in the diagnosed chirp case; both Float32 preprocessing/window rounding and FFT arithmetic contribute.
 
 ## Scope and next steps
 

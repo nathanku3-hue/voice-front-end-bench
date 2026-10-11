@@ -1,0 +1,130 @@
+{
+  "scope": "C++ (FFTW double) vs torchaudio.compliance.kaldi only, not official Kaldi binaries",
+  "input_format": "raw float32 PCM, Kaldi-style unnormalized amplitude in synthetic cases",
+  "reference": {
+    "torchaudio": "2.10.0+cpu",
+    "torch": "2.10.0+cpu",
+    "numpy": "2.3.5",
+    "settings": {
+      "sample_frequency": 16000,
+      "frame_length": 25,
+      "frame_shift": 10,
+      "num_mel_bins": 80,
+      "low_freq": 20,
+      "high_freq": 0,
+      "dither": 0,
+      "remove_dc_offset": true,
+      "preemphasis_coefficient": 0.97,
+      "window_type": "povey",
+      "snip_edges": true,
+      "use_power": true,
+      "use_log_fbank": true,
+      "use_energy": false,
+      "subtract_mean": false,
+      "round_to_power_of_two": true
+    }
+  },
+  "results": [
+    {
+      "signal": "multitone",
+      "reference_precision": "float32",
+      "frames": 123,
+      "max_abs": 0.08454775440701567,
+      "mae": 0.001407434763674992,
+      "rmse": 0.006205925315197094,
+      "worst_frame": 2,
+      "worst_mel_band": 76,
+      "value_cpp": -6.028921362042514,
+      "value_ref": -5.944373607635498
+    },
+    {
+      "signal": "multitone",
+      "reference_precision": "float64",
+      "frames": 123,
+      "max_abs": 0.0000930434373618283,
+      "mae": 0.0000047834820216264104,
+      "rmse": 0.000011844504700975244,
+      "worst_frame": 15,
+      "worst_mel_band": 50,
+      "value_cpp": 15.272767155726399,
+      "value_ref": 15.27286019916376
+    },
+    {
+      "signal": "noisy",
+      "reference_precision": "float32",
+      "frames": 123,
+      "max_abs": 0.0002937073840936222,
+      "mae": 0.0000036337998407912458,
+      "rmse": 0.000006375647380275088,
+      "worst_frame": 72,
+      "worst_mel_band": 1,
+      "value_cpp": 5.06693699406244,
+      "value_ref": 5.067230701446533
+    },
+    {
+      "signal": "noisy",
+      "reference_precision": "float64",
+      "frames": 123,
+      "max_abs": 0.00007716217865016972,
+      "mae": 0.000003084021684962308,
+      "rmse": 0.000004337942954817715,
+      "worst_frame": 96,
+      "worst_mel_band": 9,
+      "value_cpp": 9.786488411984303,
+      "value_ref": 9.786565574162953
+    },
+    {
+      "signal": "chirp",
+      "reference_precision": "float32",
+      "frames": 123,
+      "max_abs": 0.43239440514943794,
+      "mae": 0.0019155457028947724,
+      "rmse": 0.008914193949889295,
+      "worst_frame": 5,
+      "worst_mel_band": 78,
+      "value_cpp": -10.721138377927758,
+      "value_ref": -10.28874397277832
+    },
+    {
+      "signal": "chirp",
+      "reference_precision": "float64",
+      "frames": 123,
+      "max_abs": 0.00017718385369835943,
+      "mae": 0.0000033518588336641146,
+      "rmse": 0.000006436133670111986,
+      "worst_frame": 106,
+      "worst_mel_band": 9,
+      "value_cpp": -4.398890643803269,
+      "value_ref": -4.398713459949571
+    },
+    {
+      "signal": "silence",
+      "reference_precision": "float32",
+      "frames": 123,
+      "max_abs": 4.330301095478717e-7,
+      "mae": 4.330301095478717e-7,
+      "rmse": 4.3303010954787174e-7,
+      "worst_frame": 0,
+      "worst_mel_band": 0,
+      "value_cpp": -15.942385152878742,
+      "value_ref": -15.942384719848633
+    },
+    {
+      "signal": "silence",
+      "reference_precision": "float64",
+      "frames": 123,
+      "max_abs": 0,
+      "mae": 0,
+      "rmse": 0,
+      "worst_frame": 0,
+      "worst_mel_band": 0,
+      "value_cpp": -15.942385152878742,
+      "value_ref": -15.942385152878742
+    }
+  ],
+  "warnings": [
+    "float32/float64 reference epsilons differ on silence and low-energy bins",
+    "not bit-exact",
+    "not measured on real speech"
+  ]
+}

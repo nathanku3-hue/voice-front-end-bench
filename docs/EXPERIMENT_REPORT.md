@@ -1,6 +1,6 @@
 # Round 1 reproducibility / precision report
 
-Date: 2026-10-11. Frozen Round-1 plan; reproducibility check performed in isolated Linux build environment.
+Date: 2026-10-11. Frozen Round-1 plan. Original baseline was verified in an isolated Linux build; it has now also been revalidated on the user's host using Ubuntu 24.04 / WSL2. Both environments are recorded separately because CPU/PyTorch reductions produce slightly different last-bit results.
 
 ## Objective and invariant configuration
 
@@ -37,9 +37,51 @@ Values below are measured, not performance targets; authoritative reproducible v
 | Silence | float32 | 123 | 0.0000004330 | 0.0000004330 |
 | Silence | float64 | 123 | 0 | 0 |
 
+## Host-local WSL2 verification
+
+* Git baseline checkpoint: `085a6da` (`feat(fbank): establish locked round 1 streaming frontend baseline`), before diagnostic instrumentation.
+* Ubuntu 24.04 WSL2, Linux kernel 6.6.87.2-microsoft-standard-WSL2, GCC/G++ 13.3.0, CMake 3.28.3, FFTW3 3.3.10, Python 3.12, torch/torchaudio `2.10.0+cpu`, NumPy 2.3.5.
+* `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release`, `cmake --build build -j 4`, `ctest --test-dir build --output-on-failure`: **PASS (1/1)**, including diagnostic tracing isolation test.
+* [`results/kaldi_parity_wsl.json`](../results/kaldi_parity_wsl.json) contains all MAE/RMSE/max-error results from the WSL run. It is a second reference run, *not* a replacement for the original isolated-environment baseline.
+
+| Case | WSL Float32 max absolute log error | WSL Float64 max absolute log error |
+|---|---:|---:|
+| Multi-tone | 0.084548 | 0.000093043 |
+| Noisy | 0.00029371 | 0.000077162 |
+| Chirp | 0.432394 | 0.00017718 |
+| Silence | 0.000000433 | 0 |
+
+## New stage-wise precision diagnosis (WSL)
+
+The optional `fbank_dump --dump-stage <dir> --frame <index>` exports five little-endian float64 NumPy arrays: `after_preemphasis.npy`, `windowed_padded.npy`, `power_spectrum.npy`, `mel_energy.npy` (before floor/log), and `log_fbank.npy`. The Python `scripts/stage_diagnostics.py` independently replays torchaudio's windowing, FFT and Mel stages in Float32 and Float64, verifies its reconstructed features exactly match the public `kaldi.fbank` output, and compares the C++ trace against both. Tracing leaves C++ emitted Fbank values unchanged (explicit test and CSV comparison).
+
+Two recorded examples: [chirp frame 5 / band 78](../results/stage_chirp_f5_b78.json) and [multi-tone frame 109 / band 79](../results/stage_multitone_f109_b79.json).
+
+| Chirp frame 5 / Mel band 78 | Pre-log Mel energy | Log-Mel |
+|---|---:|---:|
+| C++ FFTW double | 2.20733761e-5 | -10.721138 |
+| torchaudio Float32 (WSL) | 3.40138176e-5 | -10.288744 |
+| torchaudio Float64 (WSL) | 2.20732513e-5 | -10.721144 |
+
+The log-energy floor is `1.1920928955e-7`, well below **both** energies. Therefore **the 0.432394 difference is NOT caused by hitting the log floor**. It reflects a significant *relative* difference in already-small pre-log energy, with `log` converting an energy ratio into a log-feature difference.
+
+To locate the origin of the energy discrepancy, the crossover experiment fixed the **same torchaudio-generated Float32 Mel weights** (promoted to Float64) and the **same Float64 dot-product accumulator**:
+
+| Source used for chirp band 78 | Energy |
+|---|---:|
+| C++ double FFT power | 2.207325125e-5 |
+| torchaudio Float64 FFT power | 2.207325125e-5 |
+| torchaudio Float32 FFT power | 3.401381733e-5 |
+| Float32-windowed signal then Float64 FFT | 3.193993220e-5 |
+| Float64-windowed signal then Float32 FFT | 2.516705658e-5 |
+
+This separates errors in **Float32 frame preprocessing/window samples** from additional **Float32 FFT/power arithmetic**; both contribute. Holding Mel weights and accumulation fixed does not remove the discrepancy, so they are **not the dominant cause in this specific band**. These controlled swaps are not additive, and this diagnosis does not prove official Kaldi parity or explain every frame.
+
+The multi-tone check finds the same qualitative pattern: band 79 has C++ energy `6.14672644e-4`, Float32 energy `6.4987730e-4`, and Float64 energy `6.14678041e-4`; Float32 vs C++ log difference `0.055694`, Float64 vs C++ about `8.78e-6`.
+
 ## Failure analysis / limitations
 
-1. **Float32 near-null error:** Some chirp/multitone triangular Mel bands contain extremely small spectral energy. The largest float32 mismatch occurs at chirp frame 5, Mel band 78: C++ -10.721138, torchaudio float32 -10.282817, but torchaudio float64 -10.721144. This supports a float32 numerical-cancellation explanation at near-null bins (not yet a fully isolated root cause). FFT, Mel-weight arithmetic and per-frame operation order need independent checks before claiming official parity. Not an ASR accuracy error and not an argument to dismiss these outliers. A production Kaldi-float implementation must be validated separately.
+1. **Precision-dependent low-energy error:** Original isolated baseline reached `0.43832` float32 max on chirp; on WSL2 the comparable worst-case is `0.432394`. Stage tracing attributes this example to Float32 preprocessing/window and FFT numerical sensitivity before the Mel log—not to a log-floor clamp, nor exclusively to Mel accumulation. Results vary by CPU/kernel/precision. This is *not* an ASR accuracy measure and does not imply any improvement to product CER.
 2. **Float64 reference not mathematically exact Kaldi:** torchaudio's Mel weight construction and PyTorch operation order may differ from Kaldi C++ floats. The float64 max difference is small but nonzero; matching its output does not establish exact agreement with the official Kaldi binary.
 3. **Silence floor:** The implementation uses the float32 machine epsilon floor for Mel power, as in torchaudio's Kaldi-compatible `EPSILON`, rather than double epsilon. This was explicitly corrected after the first parity run; otherwise silence would differ by `ln(eps_f32 / eps_f64) ≈ 20.1`.
 4. **Narrow test population:** Only synthetic conditions in this round, no real speech/ASR, no Kaldi executable verification and no platform-specific latency or memory-allocator benchmark. No numerical claim for product outcomes, voice quality, BER/CER or speedup is implied.
@@ -47,4 +89,4 @@ Values below are measured, not performance targets; authoritative reproducible v
 
 ## Follow-up gated validation
 
-If extending *within Round 1*, add the official Kaldi `compute-fbank-feats` binary configured identically, inspect per-stage numerical traces when near-floor bins disagree, then record any implementation-specific tolerance. Do not substitute `torchaudio.compliance.kaldi` for that independent official check.
+The stage trace and two precision-crossover cases are now complete. Optional future Round 1 work: build the **official** Kaldi `compute-fbank-feats` executable with identically matched settings and compare by stage / frame. It has **not** been run. Do not substitute `torchaudio.compliance.kaldi` for that independent official check.

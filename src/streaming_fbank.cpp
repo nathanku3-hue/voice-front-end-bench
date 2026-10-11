@@ -98,6 +98,7 @@ void StreamingFbank::AcceptWaveform(const float* samples, std::size_t count) {
 }
 
 void StreamingFbank::EmitFrame() {
+  StageTrace* trace = trace_ && produced_ == trace_target_ ? trace_.get() : nullptr;
   double mean = 0.0;
   for (std::size_t n = 0; n < kFrameSize; ++n) {
     mean += static_cast<double>(ring_[(head_ + n) % kFrameSize]);
@@ -110,10 +111,12 @@ void StreamingFbank::EmitFrame() {
     // Kaldi pre-emphasis is PER FRAME, after optional DC removal. At n=0,
     // the initial previous input is the same first sample (replicate pad).
     const double preemphasized = centered - kPreemphasis * previous;
+    if (trace) trace->after_preemphasis[n] = preemphasized;
     fft_->input[n] = preemphasized * window_[n];
     previous = centered;
   }
   std::fill(fft_->input + kFrameSize, fft_->input + kFftSize, 0.0);
+  if (trace) std::copy(fft_->input, fft_->input + kFftSize, trace->windowed_padded.begin());
   fftw_execute(fft_->plan);
 
   std::array<double, kFftSize / 2 + 1> power{};
@@ -121,6 +124,7 @@ void StreamingFbank::EmitFrame() {
     const double real = fft_->output[k][0], imag = fft_->output[k][1];
     power[k] = real * real + imag * imag;
   }
+  if (trace) trace->power_spectrum = power;
   Feature feature{};
   for (std::size_t b = 0; b < kMelBins; ++b) {
     double energy = 0.0;
@@ -128,13 +132,34 @@ void StreamingFbank::EmitFrame() {
       energy += mel_[b][k] * power[k];
     }
     feature[b] = std::log(std::max(energy, static_cast<double>(std::numeric_limits<float>::epsilon())));
+    if (trace) {
+      trace->mel_energy[b] = energy;
+      trace->log_fbank[b] = feature[b];
+    }
   }
+  if (trace) trace_recorded_ = true;
   ready_.push_back(feature);
   ++produced_;
 }
 
 std::size_t StreamingFbank::NumFramesReady() const noexcept { return ready_.size(); }
 std::size_t StreamingFbank::FramesProduced() const noexcept { return produced_; }
+
+void StreamingFbank::CaptureStageTraceAt(std::size_t frame_index) {
+  if (filled_ != 0 || produced_ != 0) {
+    throw std::logic_error("CaptureStageTraceAt must be called before waveform input");
+  }
+  trace_target_ = frame_index;
+  trace_ = std::make_unique<StageTrace>();
+  trace_recorded_ = false;
+}
+
+bool StreamingFbank::HasStageTrace() const noexcept { return trace_recorded_; }
+
+const StreamingFbank::StageTrace& StreamingFbank::GetStageTrace() const {
+  if (!trace_recorded_ || !trace_) throw std::out_of_range("Stage trace not captured");
+  return *trace_;
+}
 
 StreamingFbank::Feature StreamingFbank::GetFrame() {
   if (ready_.empty()) throw std::out_of_range("No Fbank frames ready");
@@ -146,6 +171,8 @@ StreamingFbank::Feature StreamingFbank::GetFrame() {
 void StreamingFbank::Reset() {
   head_ = filled_ = produced_ = 0;
   ready_.clear();
+  trace_.reset();
+  trace_recorded_ = false;
 }
 
 }  // namespace voice
