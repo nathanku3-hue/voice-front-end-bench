@@ -67,3 +67,18 @@ Frozen exclusions: custom FFT implementation, AEC3/NS, online CMVN, neural model
 ## License/dependency notice
 
 FFTW3 is a separately installed FFT backend with its own GPL license terms. This repository does **not** bundle FFTW3 code or binaries. Check its license suitability before distributing a linked application; a permissively licensed FFT alternative can be evaluated as a distinct future change.
+
+## Round 2 — streaming ASR endpoint evaluation (separate from Round 1)
+
+The Round 1 C++ Fbank baseline is frozen. In Round 2, sherpa-onnx handles its **own waveform-to-feature-to-online-transducer pipeline**; it does *not* ingest this repo's C++ Fbank.
+
+A reproducible WSL2 smoke test has decoded the official test WAV shipped with the public Chinese 14M Streaming Zipformer. The three-setting endpoint threshold pilot is documented in [`docs/ROUND2_STATUS.md`](docs/ROUND2_STATUS.md) and [`results/round2_pilot.json`](results/round2_pilot.json). A **single source-matched but not byte-verified reference** was used for provisional CER only. There is no independently audited vehicle-command benchmark or product latency claim.
+
+Runtime dependency versions are pinned in [`requirements-round2.txt`](requirements-round2.txt). Download the model yourself from the canonical release URL in the status document, keep it outside Git, and use the documented manifest/WAV CLI.
+
+```bash
+python -m unittest discover -s tests -p 'test_asr_*.py' -v
+python scripts/asr_stream_bench.py --model-dir /path/to/model --wav /path/to/model/test_wavs/0.wav --chunk-ms 160 --output build/asr_smoke.json
+```
+
+The runner supports externally labeled JSONL manifests with reference transcripts and optional speech-end timestamps whose annotation method must be recorded. Unlabeled WAVs yield no CER score. **The 30-utterance AISHELL-1 test subset and five-threshold sweep have now been executed**. The source-matched corpus CER results, chart, small-sample bootstrap, and critical limitations are documented in [**Round 2 Evaluation Report**](docs/ROUND2_EVALUATION_REPORT.md) and [dataset methodology](docs/ROUND2_DATASET.md). See [endpoint trade-off chart](results/endpoint_tradeoff.png). The speech-end timestamps are automatically estimated (28/30 clips lack a clear trailing-silence tail), **not independently verified ground-truth product response times**. WebRTC NS remains out of scope for this dataset task.

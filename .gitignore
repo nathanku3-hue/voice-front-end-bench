@@ -3,3 +3,5 @@
 *.pyc
 __pycache__/
 /results/*.csv
+!/results/endpoint_summary.csv
+/data/round2_endpoint_eval/audio/

@@ -1,0 +1,151 @@
+{
+  "experiment": "Round 2 pilot, single published-WenetSpeech-example-like audio, NOT a validated vehicle command corpus",
+  "sample_provenance": {
+    "wav": "sherpa-onnx-streaming-zipformer-zh-14M-2023-02-23/test_wavs/0.wav",
+    "sha256": "668bf8df51a10027b84d5d8816a1ce11ae93545538dc05cfe2aa6811d399c250",
+    "candidate_reference_source": "https://evalscope.readthedocs.io/zh-cn/latest/benchmarks/wenet_speech.html",
+    "candidate_reference_description": "Published WenetSpeech dev item 0, matching highly distinctive utterance and approximately 175.3 KB audio size. Binary identity across packages has not been independently verified.",
+    "ground_truth_status": "provisional-reference-match; do not use these pilot CER values as generalization or independently certified benchmark results"
+  },
+  "archive_sha256": "2cbd71b640d9c37d3784f29367333a4577b0398b62e9deeed418170b081cba8b",
+  "model": {
+    "type": "sherpa-onnx OnlineRecognizer transducer",
+    "name": "sherpa-onnx-streaming-zipformer-zh-14M-2023-02-23",
+    "file_sha256": {
+      "tokens": "8b294db9045d6e5f94647f4c1eec1af4da143a75053c399611444b378ff966ac",
+      "encoder": "1c556ea57cec304e55ec4b72e52c1cc098bb01476ed7d90f3de939fe126487b1",
+      "decoder": "5ee0f03a2768ff1d5c83ef3a493243c7935d316cd41280037b14783a3467cc78",
+      "joiner": "a7cf9d82757bdcf786059454495a9ca95e4bd7347f72473fc08d794475c36169"
+    },
+    "sherpa_onnx_version": "1.13.8"
+  },
+  "observations": [
+    {
+      "condition": "no_endpoint_unpaced",
+      "config": {
+        "chunk_ms": 160,
+        "tail_ms": 2000,
+        "threads": 2,
+        "endpoint_enabled": false,
+        "rule2_trailing_silence_ms": 800,
+        "replay": "as_fast_as_possible",
+        "cer_normalization": "NFKC + casefold + strip Unicode punctuation and spaces"
+      },
+      "waveform_duration_s": 5.6115,
+      "consumed_audio_s": 7.6115,
+      "hypothesis": "对我做了介绍那么我想说的是大家如果对我的研究感兴趣",
+      "reference": "对我做了介绍啊那么我想说的是呢大家如果对我的研究感兴趣呢嗯",
+      "provisional_cer": 0.13793103448275862,
+      "edits": {
+        "s": 0,
+        "d": 4,
+        "i": 0,
+        "reference_chars": 29
+      },
+      "endpoint_detected": false,
+      "endpoint_audio_s": null,
+      "endpoint_wall_s": null,
+      "first_partial_audio_s": 0.8,
+      "first_partial_wall_s": 0.023475680999993642,
+      "processing_rtf": 0.029677346876947647,
+      "replay_wall_s": 0.16689984100000288
+    },
+    {
+      "condition": "rule2_400ms_paced",
+      "config": {
+        "chunk_ms": 160,
+        "tail_ms": 2000,
+        "threads": 2,
+        "endpoint_enabled": true,
+        "rule2_trailing_silence_ms": 400,
+        "replay": "paced_file_replay",
+        "cer_normalization": "NFKC + casefold + strip Unicode punctuation and spaces"
+      },
+      "waveform_duration_s": 5.6115,
+      "consumed_audio_s": 2.08,
+      "hypothesis": "对我做了介绍",
+      "reference": "对我做了介绍啊那么我想说的是呢大家如果对我的研究感兴趣呢嗯",
+      "provisional_cer": 0.7931034482758621,
+      "edits": {
+        "s": 0,
+        "d": 23,
+        "i": 0,
+        "reference_chars": 29
+      },
+      "endpoint_detected": true,
+      "endpoint_audio_s": 2.08,
+      "endpoint_wall_s": 2.086246707000015,
+      "first_partial_audio_s": 0.8,
+      "first_partial_wall_s": 0.8065040730000135,
+      "processing_rtf": 0.01459614078232372,
+      "replay_wall_s": 2.086253577000008
+    },
+    {
+      "condition": "rule2_800ms_paced",
+      "config": {
+        "chunk_ms": 160,
+        "tail_ms": 2000,
+        "threads": 2,
+        "endpoint_enabled": true,
+        "rule2_trailing_silence_ms": 800,
+        "replay": "paced_file_replay",
+        "cer_normalization": "NFKC + casefold + strip Unicode punctuation and spaces"
+      },
+      "waveform_duration_s": 5.6115,
+      "consumed_audio_s": 5.9315,
+      "hypothesis": "对我做了介绍那么我想说的是大家如果对我的研究感兴趣",
+      "reference": "对我做了介绍啊那么我想说的是呢大家如果对我的研究感兴趣呢嗯",
+      "provisional_cer": 0.13793103448275862,
+      "edits": {
+        "s": 0,
+        "d": 4,
+        "i": 0,
+        "reference_chars": 29
+      },
+      "endpoint_detected": true,
+      "endpoint_audio_s": 5.9315,
+      "endpoint_wall_s": 5.936423552000008,
+      "first_partial_audio_s": 0.8,
+      "first_partial_wall_s": 0.8065469510000014,
+      "processing_rtf": 0.01919599928718806,
+      "replay_wall_s": 5.93643306300001
+    },
+    {
+      "condition": "rule2_1200ms_paced",
+      "config": {
+        "chunk_ms": 160,
+        "tail_ms": 2000,
+        "threads": 2,
+        "endpoint_enabled": true,
+        "rule2_trailing_silence_ms": 1200,
+        "replay": "paced_file_replay",
+        "cer_normalization": "NFKC + casefold + strip Unicode punctuation and spaces"
+      },
+      "waveform_duration_s": 5.6115,
+      "consumed_audio_s": 6.2515,
+      "hypothesis": "对我做了介绍那么我想说的是大家如果对我的研究感兴趣",
+      "reference": "对我做了介绍啊那么我想说的是呢大家如果对我的研究感兴趣呢嗯",
+      "provisional_cer": 0.13793103448275862,
+      "edits": {
+        "s": 0,
+        "d": 4,
+        "i": 0,
+        "reference_chars": 29
+      },
+      "endpoint_detected": true,
+      "endpoint_audio_s": 6.2515,
+      "endpoint_wall_s": 6.257028985999995,
+      "first_partial_audio_s": 0.8,
+      "first_partial_wall_s": 0.8060837870000057,
+      "processing_rtf": 0.020734102824561538,
+      "replay_wall_s": 6.257040381999985
+    }
+  ],
+  "limitations": [
+    "Only one speech sample; not a car-command benchmark",
+    "Unknown manually annotated speech end (no true endpoint-delay-from-end)",
+    "Input replay paced on same local machine, no physical microphone, no product latency/SLA",
+    "No noise suppression or AEC",
+    "Model receives waveform through sherpa-onnx internal feature pipeline, not custom C++ Fbank"
+  ]
+}

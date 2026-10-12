@@ -1,0 +1,4 @@
+# Round 2 waveform-based online ASR runner only; Round 1 torchaudio parity uses its separate environment.
+sherpa-onnx==1.13.8
+numpy==2.3.5
+matplotlib==3.10.7  # used only by scripts/run_endpoint_sweep.py for PNG output

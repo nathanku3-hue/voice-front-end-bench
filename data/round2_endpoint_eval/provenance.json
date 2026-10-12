@@ -1,0 +1,40 @@
+{
+  "source_mirror": "TwinkStart/AISHELL-1",
+  "mirror_revision": "2a509ef",
+  "split": "test",
+  "original_transcript_url": "https://huggingface.co/datasets/AISHELL/AISHELL-1/resolve/main/data_aishell/transcript/aishell_transcript_v0.8.txt",
+  "original_transcript_sha256": "b5f33b9e0b47548e20a5ea4e504297f80df41d559133924c4e5b7b544c15b5c4",
+  "seed": 20261011,
+  "pages": 10,
+  "page_offsets": [
+    0,
+    786,
+    1572,
+    2359,
+    3145,
+    3931,
+    4717,
+    5504,
+    6290,
+    7076
+  ],
+  "total_test_rows": 7176,
+  "n": 30,
+  "speaker_counts": {
+    "S0764": 3,
+    "S0766": 3,
+    "S0768": 3,
+    "S0769": 3,
+    "S0770": 3,
+    "S0904": 3,
+    "S0906": 3,
+    "S0908": 3,
+    "S0912": 2,
+    "S0914": 2,
+    "S0916": 2
+  },
+  "rejected": [],
+  "reference_policy": "original transcripts matched to mirror independently of ASR",
+  "endpoint_policy": "peak-relative RMS -35dB estimate; NOT human ground truth",
+  "possible_training_overlap": "unverified"
+}
