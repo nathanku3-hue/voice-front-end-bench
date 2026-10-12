@@ -1,6 +1,6 @@
 # Round 2 — Integration Status and Endpoint Pilot
 
-**2026-10-11. R2-A online recognition smoke test: PASS. R2-B 30-utterance AISHELL-1 test subset sweep: executed, but human speech-end latency validation remains OPEN. R2-C Noise Suppression: NOT STARTED.** The original single-file pilot below is retained as history. Current multi-sample analysis: [Round 2 Evaluation Report](ROUND2_EVALUATION_REPORT.md) and [endpoint plot](../results/endpoint_tradeoff.png). See [locked plan](PROJECT_PLAN.md).
+**Current status (2026-10-12): Round 2 CLOSED as an exploratory R2-A/R2-B evaluation; independent human speech-end latency validation is still NOT DONE. Optional R2-C Noise Suppression is DEFERRED.** The original 2026-10-11 single-file pilot below is retained as history. Current multi-sample analysis: [Round 2 Evaluation Report](ROUND2_EVALUATION_REPORT.md) and [endpoint plot](../results/endpoint_tradeoff.png). See [locked plan](PROJECT_PLAN.md).
 
 ## Verified system
 

@@ -4,4 +4,6 @@
 __pycache__/
 /results/*.csv
 !/results/endpoint_summary.csv
+!/results/p3_cost_observations.csv
+!/results/p3_frontend_summary.csv
 /data/round2_endpoint_eval/audio/

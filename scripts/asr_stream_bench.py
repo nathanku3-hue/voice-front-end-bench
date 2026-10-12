@@ -97,6 +97,9 @@ def online_model(model_dir: Path, args):
         num_threads=args.threads,
         sample_rate=SAMPLE_RATE,
         feature_dim=80,
+        # Explicitly preserve Round 2 defaults unless user elects an ablation.
+        snip_edges=args.snip_edges,
+        high_freq=args.high_freq,
         normalize_samples=True,
         dither=0.0,
         decoding_method="greedy_search",
@@ -211,11 +214,17 @@ def main():
     parser.add_argument("--threads", type=int, default=2)
     parser.add_argument("--endpoint", action="store_true")
     parser.add_argument("--rule2-ms", type=int, default=800)
+    parser.add_argument("--snip-edges", action="store_true", default=False,
+                        help="Change native sherpa frontend framing; default False (Round 2)")
+    parser.add_argument("--high-freq", type=float, default=-400.0,
+                        help="Native sherpa Mel upper cutoff: -400=7600Hz, 0=8000Hz at 16k")
     parser.add_argument("--paced", action="store_true", help="Schedule input at audio rate; not a physical microphone")
     parser.add_argument("--output", type=Path, default=Path("results/asr_baseline.json"))
     args = parser.parse_args()
     if args.chunk_ms < 1 or args.tail_ms < 0 or args.threads < 1 or args.rule2_ms < 1:
         parser.error("chunk_ms / threads / rule2_ms must be positive; tail_ms must be nonnegative")
+    if not np.isfinite(args.high_freq) or not (-8000.0 < args.high_freq <= 8000.0):
+        parser.error("--high-freq must be finite and within (-8000, 8000] Hz")
     if args.wav is None and (args.reference is not None or args.speech_end_s is not None):
         parser.error("--reference and --speech-end-s work only with --wav")
     if args.reference is not None and not args.reference.strip():
@@ -269,6 +278,7 @@ def main():
                         "machine": platform.machine(), "numpy": np.__version__},
         "config": {"chunk_ms": args.chunk_ms, "tail_ms": args.tail_ms, "threads": args.threads,
                    "endpoint_enabled": args.endpoint, "rule2_trailing_silence_ms": args.rule2_ms,
+                   "snip_edges": args.snip_edges, "high_freq": args.high_freq,
                    "replay": "paced_file_replay" if args.paced else "as_fast_as_possible",
                    "cer_normalization": NORMALIZATION},
         "timing_note": "Unpaced wall-time is not user-facing latency. Endpoint audio_time is the stream-time including synthetic tail. Report measured decode wall only as a machine-specific proxy. Source file has no real-time capture clocks.",

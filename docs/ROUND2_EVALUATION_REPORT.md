@@ -48,6 +48,10 @@ Only the **Rule2 minimum trailing silence** threshold was changed: 300, 500, 700
 
 Observed deletions fell from **244** at 300 ms to **7** at 1200 ms; this is the major source of the CER difference. It is not direct proof that an acoustic echo canceller suppressed near-end speech.
 
+### Independent post-hoc endpoint stream-time comparison
+
+A later [paired endpoint timing audit](ROUND3_VALIDATION_REPORT.md) avoids the estimated speech-end reference entirely, computing **within-utterance finalization stream-time deltas** from the same committed result JSON. For 700→1200 ms thresholds, mean additional stream-time was **1179.2 ms**, median **320 ms** (30 matched WAVs), not a fixed 500 ms. These are algorithmic stream-time differences during unpaced replay, **not** verified device response delays. A production operating point remains unselected.
+
 ### Paired uncertainty estimate
 
 A **paired speaker-cluster bootstrap** (11 observed speakers, 5,000 fixed-seed resamples) for **1200 ms minus 300 ms** yielded a CER difference of **−51.12 percentage points** and approximate **95% interval [−59.10, −42.55] percentage points**. See `../results/paired_endpoint_ci.json` and `../scripts/paired_endpoint_ci.py`. The per-threshold intervals in the table use **utterance-level** resampling and thus **do not** account for speaker grouping; the paired difference uses speaker-level grouping. Neither interval establishes in-car generalizability or independent training-run variance.

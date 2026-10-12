@@ -12,15 +12,27 @@
 
 ---
 
-## Streaming ASR Pilot — Online Transducer Evaluation
+## Streaming ASR Endpoint Evaluation — Online Transducer (Round 2)
 
 **Focus:** ASR integration, endpointing, accuracy-latency trade-offs.
 
 - Integrated a fixed Chinese streaming Transducer ASR pipeline and built a reproducible evaluation harness for streaming waveform input, CER/S-D-I measurement, model metadata tracking, and controlled endpoint experiments.
 
-- Evaluated trailing-silence endpoint configurations under controlled replay conditions, demonstrating the engineering trade-off between faster response commitment and increased deletion errors caused by premature speech truncation.
+- Benchmarked 30 AISHELL-1 test utterances (11 speakers, 403 independently matched reference characters) across five Rule2 trailing-silence thresholds on a fixed online Transducer: corpus CER declined from **64.76% (300 ms)** to **13.65% (1200 ms)** and deletion edits from **244 to 7**, at the cost of more conservative finalization; this is **not** a verified real-time product latency gain.
 
-- Designed evaluation boundaries to separate model-native frontend behavior from custom C++ Fbank experiments, avoiding attribution of ASR changes to unconnected frontend components.
+- Audited per-utterance S/D/I errors and computed a paired **11-speaker-cluster bootstrap** for the observed **−51.12 percentage-point CER difference** (95% interval **−59.10 to −42.55 points**), while documenting that reverse-RMS speech-end estimates (unclear for 28/30 clips) are **not** manually verified product latency.
+
+- Kept sherpa-onnx's native waveform frontend separate from the C++ Fbank implementation; did not attribute the endpoint CER gains to unconnected DSP code.
+
+- Audited paired finalization stream-time on 30 matched utterances (700→1200 ms Rule2: median **+320 ms**, mean **+1179 ms**) without using noisy end-of-speech labels; isolated a native-vs-C++ Fbank **configuration mismatch** and demonstrated close **feature-level** agreement after matching framing and Mel cutoff (MAE **4.58e-6**, 559 frames). No model-output parity or real microphone latency claimed.
+
+- Executed a controlled **2×2 sherpa-native frontend** configuration study on 30 matched test WAVs, measuring CER under disabled and fixed-1200ms endpointing: changing framing/Mel cutoff to the C++ *settings* altered **9/30 transcripts** and increased the 1200ms CER **13.65% → 14.89%**; also built an explicit hypothetical deletion-vs-waiting cost envelope showing why a visually appealing **700ms knee** is not optimal for the assumed loss. No real product SLA or C++→ONNX inference demonstrated.
+
+---
+
+## Mandarin Text-Normalization Demo (Round 3)
+
+- Built a standalone rule-based Mandarin vehicle-message normalization CLI with 21 curated regression examples (distance, speed, clock time, temperature, percentages) and explicit **visual** phrase-break hints; **no** acoustic TTS synthesis or MOS/audio quality measurement claimed.
 
 ---
 

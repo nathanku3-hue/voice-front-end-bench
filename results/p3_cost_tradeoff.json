@@ -1,0 +1,226 @@
+{
+  "method": "observational linear sensitivity model, NOT a fitted business loss",
+  "source": "results/endpoint_sweep",
+  "objective": "mean_endpoint_stream_time_ms + lambda_ms_per_deleted_char * deletions_per_utterance",
+  "lambda_units": "ms added to expected per-utterance cost per deletion edit",
+  "stream_time_caveat": "unpaced file replay stream-time, NOT speech-end-to-user-response latency",
+  "unverified_assumption": "one deletion edit costs the same independent of context and utility; λ is illustrative",
+  "notes": [
+    "30 matched AISHELL-1 read-speech utterances, 11 speakers; not real car commands",
+    "Missing human-verified speech ends and realistic application SLA",
+    "lambda=0 selects fastest observed endpoint; no optimal production threshold is claimed",
+    "Strict interior winner intervals; exact boundaries may have tied configurations",
+    "Mean across identical utterances, unlike conditional on-time mean delay"
+  ],
+  "observations": [
+    {
+      "threshold_ms": 300,
+      "utterances": 30,
+      "mean_endpoint_stream_time_ms": 2153.73125,
+      "deletions": 244,
+      "deletions_per_utterance": 8.133333333333333,
+      "s": 17,
+      "i": 0,
+      "reference_chars": 403,
+      "cer": 0.6476426799007444,
+      "extra_mean_stream_time_vs_300_ms": 0.0
+    },
+    {
+      "threshold_ms": 500,
+      "utterances": 30,
+      "mean_endpoint_stream_time_ms": 3738.7979166666664,
+      "deletions": 101,
+      "deletions_per_utterance": 3.3666666666666667,
+      "s": 27,
+      "i": 1,
+      "reference_chars": 403,
+      "cer": 0.3200992555831266,
+      "extra_mean_stream_time_vs_300_ms": 1585.0666666666666
+    },
+    {
+      "threshold_ms": 700,
+      "utterances": 30,
+      "mean_endpoint_stream_time_ms": 4364.202083333334,
+      "deletions": 66,
+      "deletions_per_utterance": 2.2,
+      "s": 35,
+      "i": 2,
+      "reference_chars": 403,
+      "cer": 0.2555831265508685,
+      "extra_mean_stream_time_vs_300_ms": 2210.4708333333338
+    },
+    {
+      "threshold_ms": 900,
+      "utterances": 30,
+      "mean_endpoint_stream_time_ms": 4809.877083333333,
+      "deletions": 36,
+      "deletions_per_utterance": 1.2,
+      "s": 43,
+      "i": 2,
+      "reference_chars": 403,
+      "cer": 0.20099255583126552,
+      "extra_mean_stream_time_vs_300_ms": 2656.145833333333
+    },
+    {
+      "threshold_ms": 1200,
+      "utterances": 30,
+      "mean_endpoint_stream_time_ms": 5543.447916666667,
+      "deletions": 7,
+      "deletions_per_utterance": 0.23333333333333334,
+      "s": 46,
+      "i": 2,
+      "reference_chars": 403,
+      "cer": 0.13647642679900746,
+      "extra_mean_stream_time_vs_300_ms": 3389.716666666667
+    }
+  ],
+  "open_intervals": [
+    {
+      "lambda_min_exclusive": 0.0,
+      "lambda_max_exclusive": 332.53146853147,
+      "winner_threshold_ms": [
+        300
+      ]
+    },
+    {
+      "lambda_min_exclusive": 332.53146853147,
+      "lambda_max_exclusive": 494.34423076923,
+      "winner_threshold_ms": [
+        500
+      ]
+    },
+    {
+      "lambda_min_exclusive": 494.34423076923,
+      "lambda_max_exclusive": 758.86637931035,
+      "winner_threshold_ms": [
+        900
+      ]
+    },
+    {
+      "lambda_min_exclusive": 758.86637931035,
+      "lambda_max_exclusive": null,
+      "winner_threshold_ms": [
+        1200
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "lambda_ms_per_deleted_char": 0,
+      "winners_threshold_ms": [
+        300
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 0.0,
+        "500": 1585.0666666666666,
+        "700": 2210.4708333333338,
+        "900": 2656.145833333333,
+        "1200": 3389.716666666667
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 15,
+      "winners_threshold_ms": [
+        300
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 122.0,
+        "500": 1635.5666666666666,
+        "700": 2243.4708333333338,
+        "900": 2674.145833333333,
+        "1200": 3393.216666666667
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 20,
+      "winners_threshold_ms": [
+        300
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 162.66666666666652,
+        "500": 1652.4,
+        "700": 2254.4708333333338,
+        "900": 2680.145833333333,
+        "1200": 3394.383333333334
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 300,
+      "winners_threshold_ms": [
+        300
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 2440.0,
+        "500": 2595.0666666666666,
+        "700": 2870.4708333333338,
+        "900": 3016.145833333333,
+        "1200": 3459.716666666667
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 400,
+      "winners_threshold_ms": [
+        500
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 3253.333333333333,
+        "500": 2931.7333333333336,
+        "700": 3090.4708333333338,
+        "900": 3136.145833333333,
+        "1200": 3483.05
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 500,
+      "winners_threshold_ms": [
+        900
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 4066.666666666667,
+        "500": 3268.3999999999996,
+        "700": 3310.4708333333338,
+        "900": 3256.145833333333,
+        "1200": 3506.383333333334
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 600,
+      "winners_threshold_ms": [
+        900
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 4880.0,
+        "500": 3605.0666666666666,
+        "700": 3530.4708333333338,
+        "900": 3376.145833333333,
+        "1200": 3529.716666666667
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 800,
+      "winners_threshold_ms": [
+        1200
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 6506.666666666665,
+        "500": 4278.400000000001,
+        "700": 3970.4708333333338,
+        "900": 3616.145833333333,
+        "1200": 3576.383333333334
+      }
+    },
+    {
+      "lambda_ms_per_deleted_char": 1000,
+      "winners_threshold_ms": [
+        1200
+      ],
+      "cost_ms_per_utterance_by_threshold": {
+        "300": 8133.333333333333,
+        "500": 4951.733333333333,
+        "700": 4410.470833333334,
+        "900": 3856.145833333333,
+        "1200": 3623.05
+      }
+    }
+  ]
+}

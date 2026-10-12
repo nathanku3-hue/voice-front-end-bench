@@ -1,0 +1,263 @@
+{
+  "scope": "Native sherpa-onnx 2x2 parameter sensitivity, not C++ Fbank injection",
+  "limits": [
+    "30 AISHELL-1 read speech files; small speaker sample, not car commands",
+    "One public pretrained model, identical per-condition files/hashes/chunks/threads",
+    "snip_edges and Mel cutoff changed in sherpa's OWN native frontend only",
+    "No ONNX Encoder cache state or C++ feature input path tested",
+    "No-endpoint runs use identical padded tail then input_finished, not measured latency",
+    "Rule2 1200ms runs use approximate stream-time; no human speech-end timestamps"
+  ],
+  "modes": {
+    "no_endpoint": {
+      "conditions": {
+        "native": {
+          "snip_edges": false,
+          "high_freq": -400.0,
+          "mel_upper_hz": 7600,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 46,
+          "d": 3,
+          "i": 2,
+          "cer": 0.12655086848635236,
+          "changed_transcripts_vs_native": 0,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 0.0,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              0.0,
+              0.0
+            ]
+          },
+          "endpoint_observed_n": 0,
+          "mean_endpoint_stream_time_ms": null
+        },
+        "snip_only": {
+          "snip_edges": true,
+          "high_freq": -400.0,
+          "mel_upper_hz": 7600,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 54,
+          "d": 3,
+          "i": 4,
+          "cer": 0.1513647642679901,
+          "changed_transcripts_vs_native": 10,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 2.481389578163773,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              0.75,
+              4.702970297029703
+            ]
+          },
+          "endpoint_observed_n": 0,
+          "mean_endpoint_stream_time_ms": null
+        },
+        "cutoff_only": {
+          "snip_edges": false,
+          "high_freq": 0.0,
+          "mel_upper_hz": 8000,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 44,
+          "d": 3,
+          "i": 5,
+          "cer": 0.12903225806451613,
+          "changed_transcripts_vs_native": 8,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 0.24813895781637674,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              -1.4326647564469914,
+              1.735357917570499
+            ]
+          },
+          "endpoint_observed_n": 0,
+          "mean_endpoint_stream_time_ms": null
+        },
+        "matched_cpp_options": {
+          "snip_edges": true,
+          "high_freq": 0.0,
+          "mel_upper_hz": 8000,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 47,
+          "d": 3,
+          "i": 6,
+          "cer": 0.13895781637717122,
+          "changed_transcripts_vs_native": 9,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 1.2406947890818865,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              -0.5763688760806917,
+              3.263403263403263
+            ]
+          },
+          "endpoint_observed_n": 0,
+          "mean_endpoint_stream_time_ms": null
+        }
+      },
+      "interaction_cer_pp": -1.4888337468982633,
+      "observed_best_cer_configs": [
+        "native"
+      ],
+      "model_hashes": {
+        "tokens": "8b294db9045d6e5f94647f4c1eec1af4da143a75053c399611444b378ff966ac",
+        "encoder": "1c556ea57cec304e55ec4b72e52c1cc098bb01476ed7d90f3de939fe126487b1",
+        "decoder": "5ee0f03a2768ff1d5c83ef3a493243c7935d316cd41280037b14783a3467cc78",
+        "joiner": "a7cf9d82757bdcf786059454495a9ca95e4bd7347f72473fc08d794475c36169"
+      },
+      "manifest_sha256": "e8672fc315da23e403095610ab96f2ea1c70857bf1e5f4f2c09fffba5cd0d538",
+      "file_paths": {
+        "native": "results/p3_frontend_runs/no_endpoint_native.json",
+        "snip_only": "results/p3_frontend_runs/no_endpoint_snip_only.json",
+        "cutoff_only": "results/p3_frontend_runs/no_endpoint_cutoff_only.json",
+        "matched_cpp_options": "results/p3_frontend_runs/no_endpoint_matched_cpp_options.json"
+      }
+    },
+    "rule2_1200": {
+      "conditions": {
+        "native": {
+          "snip_edges": false,
+          "high_freq": -400.0,
+          "mel_upper_hz": 7600,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 46,
+          "d": 7,
+          "i": 2,
+          "cer": 0.13647642679900746,
+          "changed_transcripts_vs_native": 0,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 0.0,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              0.0,
+              0.0
+            ]
+          },
+          "endpoint_observed_n": 30,
+          "mean_endpoint_stream_time_ms": 5543.447916666667
+        },
+        "snip_only": {
+          "snip_edges": true,
+          "high_freq": -400.0,
+          "mel_upper_hz": 7600,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 54,
+          "d": 7,
+          "i": 4,
+          "cer": 0.16129032258064516,
+          "changed_transcripts_vs_native": 10,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 2.4813895781637703,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              0.75,
+              4.702970297029703
+            ]
+          },
+          "endpoint_observed_n": 30,
+          "mean_endpoint_stream_time_ms": 5554.114583333333
+        },
+        "cutoff_only": {
+          "snip_edges": false,
+          "high_freq": 0.0,
+          "mel_upper_hz": 8000,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 44,
+          "d": 7,
+          "i": 5,
+          "cer": 0.13895781637717122,
+          "changed_transcripts_vs_native": 8,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 0.24813895781637674,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              -1.4326647564469914,
+              1.735357917570499
+            ]
+          },
+          "endpoint_observed_n": 30,
+          "mean_endpoint_stream_time_ms": 5554.114583333333
+        },
+        "matched_cpp_options": {
+          "snip_edges": true,
+          "high_freq": 0.0,
+          "mel_upper_hz": 8000,
+          "n": 30,
+          "reference_chars": 403,
+          "s": 47,
+          "d": 7,
+          "i": 6,
+          "cer": 0.1488833746898263,
+          "changed_transcripts_vs_native": 9,
+          "deletions_difference_vs_native": 0,
+          "cer_delta_vs_native_pp": 1.2406947890818838,
+          "cer_delta_cluster_bootstrap95": {
+            "method": "paired speaker-cluster bootstrap, candidate minus native CER percentage points",
+            "speakers": 11,
+            "reps": 5000,
+            "seed": 20261011,
+            "approx_95_ci_pp": [
+              -0.5763688760806917,
+              3.263403263403263
+            ]
+          },
+          "endpoint_observed_n": 30,
+          "mean_endpoint_stream_time_ms": 5554.114583333333
+        }
+      },
+      "interaction_cer_pp": -1.4888337468982633,
+      "observed_best_cer_configs": [
+        "native"
+      ],
+      "model_hashes": {
+        "tokens": "8b294db9045d6e5f94647f4c1eec1af4da143a75053c399611444b378ff966ac",
+        "encoder": "1c556ea57cec304e55ec4b72e52c1cc098bb01476ed7d90f3de939fe126487b1",
+        "decoder": "5ee0f03a2768ff1d5c83ef3a493243c7935d316cd41280037b14783a3467cc78",
+        "joiner": "a7cf9d82757bdcf786059454495a9ca95e4bd7347f72473fc08d794475c36169"
+      },
+      "manifest_sha256": "e8672fc315da23e403095610ab96f2ea1c70857bf1e5f4f2c09fffba5cd0d538",
+      "file_paths": {
+        "native": "results/p3_frontend_runs/rule2_1200_native.json",
+        "snip_only": "results/p3_frontend_runs/rule2_1200_snip_only.json",
+        "cutoff_only": "results/p3_frontend_runs/rule2_1200_cutoff_only.json",
+        "matched_cpp_options": "results/p3_frontend_runs/rule2_1200_matched_cpp_options.json"
+      }
+    }
+  }
+}
