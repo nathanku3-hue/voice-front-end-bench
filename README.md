@@ -142,9 +142,54 @@ MODEL="$MODEL_ROOT/sherpa-onnx-streaming-zipformer-zh-14M-2023-02-23"
 
 [**Interview grill: decisions, alternatives & falsification tests**](docs/INTERVIEW_GRILL.md) · [P3 quantified decision report](docs/P3_DECISION_REPORT.md) · [Round 2 one-page explanation](docs/ROUND2_SUMMARY.md) · [CV claim/evidence mapping](CV.md) · [Resume-ready bullets with limits](RESUME_BULLETS.md)
 
-## Closure & scope
+## Independent CTC-Decoding-Bench sibling — Rounds 1–3 evaluated
 
-**Round 3 / P3 is CLOSED as a locally validated engineering portfolio** (34 Python unit tests, 1 C++ CTest and measured evidence; *not* a production speech assistant). The definitive acceptance criteria, actual experiment results and open limitations are recorded in [Round 3 Closure Record](docs/ROUND3_CLOSURE.md). Historical plan checkpoints may show earlier test counts; use the closure record for final status. Git commit is local; no push or release tag is implied.
+**This is a separate decoder research project**, using an offline 2025 Chinese
+Zipformer-CTC model, **not** the streaming Transducer above. The study frozen
+and hashed 80 real `[T,1000]` CTC log-probability arrays into a disjoint
+**30 Dev / 50 held-out Test** utterance split (not speaker-disjoint).
+
+**Dev, 30 utterances:** A numerically oracle-checked log-domain Prefix Beam
+Search and two distinct approximate Blank strategies were examined over 36
+conditions. All gave **2.94% corpus CER** (13 edits / 442 reference characters),
+matching independent Framewise Greedy. Beam 16 Hard Skip θ=.90 bypassed 80.4%
+of frames and ran **3.68× faster than unpruned Beam 16** in decoder-only Python,
+but changed 2/30 transcripts; equal aggregate CER did not mean losslessness.
+
+**Pre-registered held-out Test, 50 utterances:** One evaluation of four locked
+conditions (Greedy, Beam 16 unpruned, Beam 16 Forced Blank θ=.95, Beam 4 Forced
+Blank θ=.95) produced **1.6461% corpus CER for all four (S/D/I=11/0/1,
+12 edits / 729 reference characters)**. All **50/50 token sequences matched**;
+no UTF-8 replacement characters occurred on this Test. Mean decoder-only
+per-utterance medians were **0.0264 / 15.5411 / 5.1219 / 3.2940 ms**, respectively.
+Thus Greedy was the **sole Test CER–decoder-time Pareto choice**, and unpruned
+Beam 16 cost ~**589×** its decoder time without accuracy improvement. A
+separate 200-hypothesis audit returned **PASS**. Three deterministic bad cases
+have text/logit triage; manual audio attribution remains open.
+
+These are local Python decoder-only results with no external LM. No lossless
+pruning, training-overlap independence, speaker-disjoint robustness, universal
+Greedy advantage, end-to-end latency or production performance is claimed.
+
+[**Round 1 contract**](docs/CTC_ROUND1_STATUS.md) ·
+[**Round 2 Dev experiment**](docs/CTC_ROUND2_STATUS.md) ·
+[**Round 3 locked protocol**](docs/CTC_ROUND3_PROTOCOL.md) ·
+[**Round 3 held-out results and limitations**](docs/CTC_ROUND3_STATUS.md) ·
+[Test JSON](results/ctc_test_final_results.json) ·
+[Test CSV](results/ctc_test_final_results.csv) ·
+[Test Pareto figure](results/ctc_test_pareto.png) ·
+[CTC CV evidence](CV.md)
+
+## Original VoiceFront-End-Bench closure & scope
+
+**The original Round 3 / P3 is CLOSED as a locally validated engineering portfolio**
+(34 Python tests and 1 C++ CTest at its original closure, *not* a production
+speech assistant). The definitive acceptance criteria, measured experiment
+results and limitations are recorded in
+[Round 3 Closure Record](docs/ROUND3_CLOSURE.md). With the independent CTC
+Rounds 1–3 study included, the Python suite passed **74/74 tests** in the
+Round 3 WSL2 closure validation. See [CTC Round 3 status](docs/CTC_ROUND3_STATUS.md)
+for the one-shot held-out Test evidence. No remote push or release tag is implied.
 
 ## Boundaries & license
 

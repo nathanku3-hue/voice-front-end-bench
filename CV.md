@@ -4,7 +4,7 @@ Status:
 - VoiceFront-End-Bench: **Verified baseline + diagnostic experiments**.
 - Streaming ASR Endpoint Evaluation: **Round 2 CLOSED (30 utterances / 5 thresholds; exploratory only)**.
 - Mandarin TTS TN demo: **Round 3 rule-based examples only; no audio/MOS results**.
-- CTC-Decoding-Bench: **planned sibling project; results not yet claimed**.
+- CTC-Decoding-Bench: **Rounds 1–3 evaluated**: 80 hashed CTC Logits, 30-utterance exploratory Dev sweep (36 Prefix Beam configurations), followed by a **single pre-registered 50-utterance held-out Test evaluation** (4 conditions); independent 200-hypothesis audit PASS. Manual audio-based Bad Case attribution remains open.
 
 The portfolio goal is not to list ASR keywords. It demonstrates measurable engineering decisions: signal correctness, streaming behavior, numerical diagnosis, latency/accuracy trade-offs, and evidence-based scope control.
 
@@ -78,26 +78,43 @@ The sherpa-onnx 1.13.8 Chinese 14M Zipformer online Transducer model and its own
 
 ---
 
-# 3. CTC-Decoding-Bench (planned sibling project)
+# 3. CTC-Decoding-Bench (Rounds 1–3; held-out Test measured once)
 
 ## Purpose
 Demonstrate ASR decoder correctness, evaluation methodology, and optimization trade-offs.
 
-## Planned evidence
-- Fixed CTC acoustic model baseline with explicit input contract.
-- Greedy decoding vs log-domain Prefix Beam Search.
-- CER/S-D-I evaluation.
-- Blank/non-blank transitions, stable `log_add`, duplicate-token collapse tests, optional exhaustive alignment oracle.
-- Decoder latency vs end-to-end RTF analysis.
+## Verified Round 1 evidence
+- Fixed an independent public 2025 Chinese **offline Zipformer-CTC** INT8 ONNX model (not the Project 1 Transducer). Inspected actual `[1,T,80]` input, `[1,T_out,1000]` CTC log-prob output and true output length. Model, indexed Byte-BPE vocabulary and model binary have SHA-256 identities.
+- Froze **80 source-checked AISHELL-1 test-split utterances / 20 speakers** in a separate corpus: **30 exploratory Dev** and **50 held-out Test**, with no utterance IDs from the previous endpoint corpus. Held-out Test was not inspected for tuning and was evaluated once in Round 3. Splits are utterance-disjoint but *not speaker-disjoint*; original model training overlap is unverified.
+- Exported and hashed **80 real `[T,V]` log-probability tensors**. Asset and normalized-score integrity audit passed.
+- Measured **30-utterance Dev Greedy CER 2.94%** (**12 substitutions, 0 deletions, 1 insertion / 442 characters**) with an explicitly recorded Byte-BPE invalid-UTF-8 replacement policy (**two replacement characters**).
+- Independently compared with native sherpa-onnx: **28/30 normalized hypotheses agree**, and native corpus CER is also **2.94%**, although native drops the two incomplete symbols and thus has **10 S / 2 D / 1 I**. This is a transcript check, **not model-feature or Logits parity**.
 
-## Boundary
-CTC-Decoding-Bench is a separate decoder study and is not the decoder used by the current Zipformer Transducer benchmark.
+## Verified Round 2 — algorithm and Dev-only measurements
+- Implemented an independent **log-domain Prefix Beam Search** using Pb/Pnb states, exact full-vocabulary beam candidate ranking (no hidden acoustic Top-K), deterministic tie resolution and two **distinct approximate** Blank policies.
+- Numerically validated **all reachable prefix scores**, not only best output, against independent exhaustive Alignment Oracles (`T=3,V=4` and `T=4,V=3`, absolute tolerance `1e-6`); compared finite-beam vectorization against a literal recurrence.
+- Executed **36 configurations** on the same 30 Dev utterances: Beam widths 1/4/8/16, thresholds None/0.90/0.95/0.98/0.99, Forced Blank and Hard Skip. All 36 yielded **2.94% corpus CER** (13 edits / 442 characters), **not** an improvement over separate Framewise Greedy.
+- With **Beam 16**, Hard Skip at θ=0.90 bypassed **80.4%** of CTC frames and measured **3.68× lower decoder-only Python time** relative to **unpruned Beam 16**, *not relative to Framewise Greedy or end-to-end inference*. Median decoder time was **14.37 ms → 3.76 ms/utterance** on this host; group-median ratio is **not** the reported speedup statistic.
+- Hard Skip changed **2/30 normalized transcripts** in every width/threshold combination, while Forced Blank matched the unpruned transcript on this small Dev. One Hard Skip change introduced `�` in `平衡`; another corrected an insertion. Thus equal corpus CER does **not** mean lossless pruning.
+- Independent evidence audit recomputed S/D/I from all **36 × 30 Dev hypotheses** and checked data hashes, timing summaries, CSV/JSON equality and strict Test separation.
 
-## Do not claim before measurement
-- CER reduction.
-- Decoder speedup.
-- Lossless blank pruning.
-- Seamless Fbank-to-model integration.
+## Verified Round 3 — once-only held-out Test (50 utterances)
+- Pre-registered exactly four decoders **before** Test scoring: Framewise Greedy; Beam 16 unpruned; Beam 16 Forced Blank θ=0.95; Beam 4 Forced Blank θ=0.95. Verified the frozen 50 tensor hashes, source/export manifests, and actual ONNX/token-table/BBPE file hashes before release.
+- All four returned **Test CER 1.6461% (11 substitutions / 0 deletions / 1 insertion; 12 edits / 729 reference characters)** with **identical normalized transcripts and token sequences on all 50 utterances**; no UTF-8 replacement characters on this Test. This empirical zero drift does **not** make Forced Blank mathematically lossless.
+- Mean of per-utterance median decoder-only timings in the local WSL2 Python environment: **Greedy 0.0264 ms**, **Beam 16 unpruned 15.5411 ms**, **Beam 16 Forced .95 5.1219 ms**, **Beam 4 Forced .95 3.2940 ms**. Against the same-width unpruned Beam 16, Forced .95 is **3.03× faster**, but still approximately **194× slower than Greedy**. Unpruned Beam 16 is approximately **589× slower than Greedy** (ratios of sums of per-utterance medians).
+- **Greedy is the sole nondominated Test CER–decoder-time Pareto choice** among these four conditions. Independent re-scoring and provenance/timing/CSV checks passed for all **4 × 50 = 200** hypotheses. Three deterministic Bad Case candidates were documented with reference, hypotheses, frame confidence and audio path; **manual listening/causal acoustic diagnosis not yet performed**.
+
+## Evidence files
+- Round 1: `docs/CTC_ROUND1_STATUS.md`, `data/ctc_eval/provenance.json`, `results/ctc_round1_audit.json`
+- Real assets and Greedy: `results/ctc_logit_inventory.json`, `results/ctc_baseline_dev.json`, `results/ctc_native_audit_dev.json`
+- Round 2: `docs/CTC_ROUND2_STATUS.md`, `scripts/ctc_prefix_beam_search.py`, `tests/test_ctc_prefix_beam.py`, `scripts/run_ctc_dev_sweep.py`
+- Measured grid and independent audit: `results/ctc_dev_sweep_results.json`, `results/ctc_dev_sweep_results.csv`, `results/ctc_round2_audit.json`
+- Round 3 pre-registration, one-shot custody, 50-Test results, Pareto plot and bad-case triage: `docs/CTC_ROUND3_PROTOCOL.md`, `results/ctc_round3_unseal_claim.json`, `results/ctc_test_final_results.json`, `results/ctc_test_final_results.csv`, `results/ctc_test_pareto.png`, `docs/CTC_ROUND3_STATUS.md`; independently checked using `scripts/ctc_round3_audit.py`.
+
+## Boundary / do not claim
+- CTC is a **separate decoder study**, not the decoder in Project 1's online Transducer.
+- No Beam CER improvement, acceleration over independent Framewise Greedy, lossless Blank pruning, speaker-independent generalization or production latency has been established.
+- No custom C++ Fbank-to-CTC integration, retrained weights, or blanket model-weight redistribution permission claimed.
 
 ---
 
@@ -113,6 +130,11 @@ CTC-Decoding-Bench is a separate decoder study and is not the decoder used by th
 | Transcript provenance | `data/round2_endpoint_eval/manifest.jsonl`, `data/round2_endpoint_eval/provenance.json` |
 | CER/S-D-I evaluation | `scripts/asr_metrics.py`, `results/endpoint_sweep/` |
 | Rule-based Mandarin TN / pause hints | `scripts/tts_tn_demo.py`, `tests/test_tts_tn_demo.py` |
+| Independent CTC input contract and 80 tensor hashes | `scripts/ctc_export_logits.py`, `results/ctc_logit_inventory.json`, `results/ctc_round1_audit.json` |
+| Exploratory CTC Dev Greedy CER / native audit | `results/ctc_baseline_dev.json`, `results/ctc_native_audit_dev.json`, `docs/CTC_ROUND1_STATUS.md` |
+| Oracle-verified CTC Prefix Beam and two Blank policies | `scripts/ctc_prefix_beam_search.py`, `tests/test_ctc_prefix_beam.py`, `docs/CTC_ROUND2_STATUS.md` |
+| 36-configuration Dev decoder trade-off and evidence audit | `results/ctc_dev_sweep_results.json`, `results/ctc_dev_sweep_results.csv`, `results/ctc_round2_audit.json` |
+| Pre-registered 50-Test CER, decoder-only Pareto, 200-row independent audit | `docs/CTC_ROUND3_PROTOCOL.md`, `results/ctc_test_final_results.json`, `results/ctc_test_pareto.png`, `docs/CTC_ROUND3_STATUS.md` |
 
 ---
 

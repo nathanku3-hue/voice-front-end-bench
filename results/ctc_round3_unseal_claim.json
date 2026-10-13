@@ -1,0 +1,29 @@
+{
+  "status": "COMPLETED",
+  "utc_time": "2026-10-13T15:13:15.545278+00:00",
+  "protocol_sha256": "686a56f717f1c04935f784bd448afb18f545f7aeda6533d15f093ac6243bd55c",
+  "script_sha256": "b80a4bac9f521e22c293305ca27de24a29c129959853ac050869c84169fdeda1",
+  "conditions": [
+    "framewise_greedy",
+    "prefix_w16_unpruned",
+    "prefix_w16_forced_blank_t0.95",
+    "prefix_w04_forced_blank_t0.95"
+  ],
+  "frozen_input_contract": {
+    "dataset": "AISHELL-1/test, held-out from CTC Round 2 Dev selection",
+    "utterances": 50,
+    "model_sha256": "e291b9c468b651e2697caa09bc684326c3addc6a019e78eb537cfd1a8248ca07",
+    "source_manifest_sha256": "11651297f9dd5abdd6b985b45a383a095b8d0a1c1ab8fc9b658fb6a0e117d056",
+    "export_manifest_sha256": "6384a3d3b21e831ade5b48a0d602f391091427d356a7e2d0742a438c6c2371bd",
+    "inventory_sha256": "227a77aba6b4aec2523e750e0a9436106db7dfb98327ae1fffd4d6941c54b4c1",
+    "round2_dev_report_sha256": "d8a99eba86f761e8ae0054e1235e56354d14d70f28e031a6d484b7d734f0d4ea",
+    "token_table_sha256": "6fed8c6c248516f38e7faa19404b57413e8ce259f1cbc1fa4aebc86eac32fdfd",
+    "bbpe_model_sha256": "503204e0690eff065e30d0e01898c9ab06d0e6dc376a741eb6846198f95b2f82",
+    "blank_id": 0,
+    "tokenizer": "bbpe",
+    "byte_errors": "replace"
+  },
+  "note": "A failed or interrupted run must not be silently repeated",
+  "result_json_sha256": "8407fd9b9d45720ee0fdebfb299b375de18de47111bc2a3ba2a158c335e36b56",
+  "result_csv_sha256": "1e8b650ae19aad8a73539fe3f46c6f78679a4580edd58cff9713aad94c1ac9f2"
+}

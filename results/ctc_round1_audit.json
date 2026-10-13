@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "corpus": "AISHELL-1/test",
+  "protocol": "30 dev exploratory, 50 held-out test, utterance-disjoint",
+  "note": "This validates logits/assets, not held-out test accuracy",
+  "model_sha256": "e291b9c468b651e2697caa09bc684326c3addc6a019e78eb537cfd1a8248ca07",
+  "full_manifest_sha256": "978f40d0e2e18d4c4c4c1071703cf86c3ae884a01ac566bd16eda927a9383f8b",
+  "source_speakers": 20,
+  "splits": {
+    "dev": {
+      "count": 30,
+      "min_ctc_frames": 70,
+      "max_ctc_frames": 218,
+      "source_manifest_sha256": "d6caa71722e109ab237473ea39323333d005a8852ccc0d99c13e631cc2a56eae",
+      "export_summary_sha256": "f4402a4967f877fe5edbaea882edb5e8d8a65926d2a7768436a217e98b237515"
+    },
+    "test": {
+      "count": 50,
+      "min_ctc_frames": 65,
+      "max_ctc_frames": 238,
+      "source_manifest_sha256": "11651297f9dd5abdd6b985b45a383a095b8d0a1c1ab8fc9b658fb6a0e117d056",
+      "export_summary_sha256": "e1e825e8e39264f9ce335dfda36130b6959281af4498526de3ab9b2e966aa90d"
+    }
+  }
+}

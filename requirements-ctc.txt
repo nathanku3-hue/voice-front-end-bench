@@ -1,0 +1,8 @@
+# CTC-specific recorded WSL2 environment (Python 3.12 / CPU).
+# Matching torch + torchaudio 2.10.0+cpu wheels must be installed separately
+# from PyTorch's CPU wheel index before running ctc_export_logits.py.
+# Do not assume default PyPI torch wheels are CPU-only.
+numpy==2.3.5
+onnxruntime==1.23.2
+sentencepiece==0.2.1
+sherpa-onnx==1.13.8

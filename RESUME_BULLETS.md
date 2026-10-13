@@ -36,18 +36,22 @@
 
 ---
 
-## CTC-Decoding-Bench — Planned
+## CTC-Decoding-Bench — Oracle validation, Dev sweep, held-out Test (Rounds 1–3)
 
-**Status:** Planned sibling study; no completed metrics claimed.
+**Status:** One pre-registered 4-condition evaluation on 50 held-out Test utterances complete; independent 200-hypothesis audit PASS. Dev/Test are utterance-disjoint but not speaker-disjoint; model training overlap unverified.
 
-Target topics:
+Measured, evidence-qualified bullets:
 
-- Log-domain CTC Prefix Beam Search correctness.
-- Blank/non-blank state transitions and numerical stability.
-- Greedy vs beam decoding trade-offs.
-- Decoder latency vs recognition accuracy evaluation.
+- Fixed and hashed a separate Chinese Zipformer-CTC ONNX model and exported 80 real `[T,1000]` log-probability tensors from source-checked AISHELL-1 utterances (30 exploratory Dev / 50 held-out Test); implemented source-hashed Greedy, Byte-BPE and CER/S/D/I evaluation (30-Dev Greedy corpus CER **2.94% over 442 characters**).
+- Implemented log-domain CTC Prefix Beam Search with Blank/Non-Blank state transitions and a full-token exact beam ranking; verified **all prefix probabilities** against independent exhaustive Alignment Oracles and checked finite-width behavior against a literal reference algorithm.
+- Measured 36 Prefix Beam/Blank-shortcut Dev configurations: **all had 2.94% CER**. At Beam 16, Hard Skip θ=0.90 bypassed **80.4% of CTC frames** and was **3.68× faster decoder-only than unpruned Beam 16** on the local Python/WSL2 benchmark, but altered **2/30 transcripts**, despite equal aggregate CER. It remained far slower than separate Framewise Greedy.
 
-No resume claim should be made until implementation, validation, and reproducible measurements are complete.
+- Pre-registered and completed a single evaluation of 50 held-out Mandarin utterances (**729 reference characters**) using Greedy, Beam 16 unpruned, Beam 16 Forced Blank θ=0.95 and Beam 4 Forced Blank θ=0.95. All four gave **1.6461% corpus CER (S/D/I=11/0/1)** and exactly the same token sequences on all 50 Test utterances; independently audited **200 hypotheses**.
+- Quantified the cost of unhelpful search without a language model: **0.0264 ms/utterance Greedy** versus **15.5411 ms Beam 16 unpruned** (~**589×** decoder-only time), with no Test CER or hypothesis benefit. Beam 16 Forced Blank θ=0.95 reduced that beam's time to **5.1219 ms/utterance** (~**3.03×** faster than unpruned Beam 16), yet remained ~**194×** slower than Greedy. **Greedy alone occupies the Test CER–latency Pareto frontier** among the four fixed options. Values are local WSL2 Python decoder-only timings, **not** product response latency.
+
+**Pending:** Manual audio listening to validate the three deterministic Bad Case candidates; no acoustic causal conclusion from posterior summaries alone.
+
+**Do not claim:** universal Greedy superiority, lossless Forced Blank, general Beam CER gain, speaker-independent robustness, end-to-end ASR latency or redistribution rights for external model weights. See `docs/CTC_ROUND3_STATUS.md` and `results/ctc_test_final_results.json`.
 
 ---
 

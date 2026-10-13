@@ -1,0 +1,5 @@
+id,split,beam_width,strategy,blank_threshold,cer,s,d,i,n,decoder_mean_ms,decoder_median_ms,decoder_p95_ms,decoder_sum_of_utterance_medians_ms,utf8_replacement_chars,triggered_blank_frame_rate,forced_blank_frame_rate,actual_hard_skip_frame_rate,hypotheses_different_from_greedy,tokens_different_from_greedy
+framewise_greedy,held_out_test,,independent,,0.01646090534979424,11,0,1,729,0.026401340000000002,0.0250745,0.04314029999999998,1.320067,0,0.0,0.0,0.0,0,0
+prefix_w16_unpruned,held_out_test,16,none,,0.01646090534979424,11,0,1,729,15.54110718,15.304561,23.70528915,777.055359,0,0.0,0.0,0.0,0,0
+prefix_w16_forced_blank_t0.95,held_out_test,16,forced_blank,0.95,0.01646090534979424,11,0,1,729,5.1219276,4.816292499999999,8.210052099999999,256.09638,0,0.822452229299363,0.822452229299363,0.0,0,0
+prefix_w04_forced_blank_t0.95,held_out_test,4,forced_blank,0.95,0.01646090534979424,11,0,1,729,3.2939486,3.179957,5.596928599999999,164.69743,0,0.822452229299363,0.822452229299363,0.0,0,0
