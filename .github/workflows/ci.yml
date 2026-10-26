@@ -1,0 +1,31 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libfftw3-dev cmake g++
+
+    - name: Configure CMake
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+
+    - name: Build
+      run: |
+        cmake --build build --parallel 4
+
+    - name: Run CTest
+      run: |
+        ctest --test-dir build --output-on-failure
