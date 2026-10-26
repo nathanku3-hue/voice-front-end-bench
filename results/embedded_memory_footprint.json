@@ -1,0 +1,204 @@
+{
+  "status": "PASS",
+  "description": "Flash and RAM footprint cross-compilation audit across embedded targets",
+  "targets": {
+    "cortex_r5": {
+      "name": "ARM Cortex-R5 (SSD Controller / Automotive RTOS)",
+      "arch": "ARMv7-R (32-bit)",
+      "modules": {
+        "streaming_fbank": {
+          "text_bytes": 12104,
+          "rodata_bytes": 584,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 12688,
+          "ram_static_bytes": 0
+        },
+        "bounded_fbank_bridge": {
+          "text_bytes": 916,
+          "rodata_bytes": 290,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 1206,
+          "ram_static_bytes": 0
+        },
+        "ctc_greedy_decoder": {
+          "text_bytes": 9796,
+          "rodata_bytes": 1340,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 11136,
+          "ram_static_bytes": 0
+        },
+        "axi4s_adapter": {
+          "text_bytes": 1844,
+          "rodata_bytes": 142,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 1986,
+          "ram_static_bytes": 0
+        }
+      },
+      "totals": {
+        "text_bytes": 24660,
+        "rodata_bytes": 2356,
+        "data_bytes": 0,
+        "bss_bytes": 0,
+        "flash_total_bytes": 27016,
+        "ram_static_bytes": 0,
+        "flash_total_kb": 26.38,
+        "ram_static_kb": 0.0
+      }
+    },
+    "cortex_m4": {
+      "name": "ARM Cortex-M4 (Voice DSP Microcontroller)",
+      "arch": "ARMv7E-M / Thumb-2 (32-bit)",
+      "modules": {
+        "streaming_fbank": {
+          "text_bytes": 15944,
+          "rodata_bytes": 584,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 16528,
+          "ram_static_bytes": 0
+        },
+        "bounded_fbank_bridge": {
+          "text_bytes": 658,
+          "rodata_bytes": 290,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 948,
+          "ram_static_bytes": 0
+        },
+        "ctc_greedy_decoder": {
+          "text_bytes": 7910,
+          "rodata_bytes": 1340,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 9250,
+          "ram_static_bytes": 0
+        },
+        "axi4s_adapter": {
+          "text_bytes": 1852,
+          "rodata_bytes": 142,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 1994,
+          "ram_static_bytes": 0
+        }
+      },
+      "totals": {
+        "text_bytes": 26364,
+        "rodata_bytes": 2356,
+        "data_bytes": 0,
+        "bss_bytes": 0,
+        "flash_total_bytes": 28720,
+        "ram_static_bytes": 0,
+        "flash_total_kb": 28.05,
+        "ram_static_kb": 0.0
+      }
+    },
+    "cortex_a53": {
+      "name": "ARM Cortex-A53 (Edge AI SoC / Embedded Linux)",
+      "arch": "ARMv8-A / AArch64 (64-bit)",
+      "modules": {
+        "streaming_fbank": {
+          "text_bytes": 15308,
+          "rodata_bytes": 728,
+          "data_bytes": 8,
+          "bss_bytes": 0,
+          "flash_bytes": 16036,
+          "ram_static_bytes": 8
+        },
+        "bounded_fbank_bridge": {
+          "text_bytes": 876,
+          "rodata_bytes": 306,
+          "data_bytes": 8,
+          "bss_bytes": 0,
+          "flash_bytes": 1182,
+          "ram_static_bytes": 8
+        },
+        "ctc_greedy_decoder": {
+          "text_bytes": 10332,
+          "rodata_bytes": 1340,
+          "data_bytes": 8,
+          "bss_bytes": 0,
+          "flash_bytes": 11672,
+          "ram_static_bytes": 8
+        },
+        "axi4s_adapter": {
+          "text_bytes": 2456,
+          "rodata_bytes": 174,
+          "data_bytes": 8,
+          "bss_bytes": 0,
+          "flash_bytes": 2630,
+          "ram_static_bytes": 8
+        }
+      },
+      "totals": {
+        "text_bytes": 28972,
+        "rodata_bytes": 2548,
+        "data_bytes": 32,
+        "bss_bytes": 0,
+        "flash_total_bytes": 31520,
+        "ram_static_bytes": 32,
+        "flash_total_kb": 30.78,
+        "ram_static_kb": 0.03
+      }
+    },
+    "x86_64": {
+      "name": "x86-64 (Server / Desktop Baseline)",
+      "arch": "AMD64 (64-bit)",
+      "modules": {
+        "streaming_fbank": {
+          "text_bytes": 16438,
+          "rodata_bytes": 1056,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 17494,
+          "ram_static_bytes": 0
+        },
+        "bounded_fbank_bridge": {
+          "text_bytes": 924,
+          "rodata_bytes": 290,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 1214,
+          "ram_static_bytes": 0
+        },
+        "ctc_greedy_decoder": {
+          "text_bytes": 10275,
+          "rodata_bytes": 1340,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 11615,
+          "ram_static_bytes": 0
+        },
+        "axi4s_adapter": {
+          "text_bytes": 2612,
+          "rodata_bytes": 142,
+          "data_bytes": 0,
+          "bss_bytes": 0,
+          "flash_bytes": 2754,
+          "ram_static_bytes": 0
+        }
+      },
+      "totals": {
+        "text_bytes": 30249,
+        "rodata_bytes": 2828,
+        "data_bytes": 0,
+        "bss_bytes": 0,
+        "flash_total_bytes": 33077,
+        "ram_static_bytes": 0,
+        "flash_total_kb": 32.3,
+        "ram_static_kb": 0.0
+      }
+    }
+  },
+  "runtime_instance_footprint": {
+    "bounded_bridge_sizeof_x86": 5992,
+    "bounded_bridge_sizeof_arm32": 3968,
+    "hotpath_steady_allocations": 0,
+    "init_allocations": 7
+  }
+}

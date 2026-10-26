@@ -1,0 +1,35 @@
+{
+  "status": "measured_zero_alloc_steady_state",
+  "platform": "windows",
+  "compiler": "clang 21.1.0 ",
+  "config": {
+    "frames": 10000,
+    "output_capacity": 2,
+    "chunk_samples": 160,
+    "warmup_frames": 200
+  },
+  "frames": 10000,
+  "samples": 1600240,
+  "ticks": 20002,
+  "pause_events": 9998,
+  "resume_events": 9998,
+  "max_frames_held": 2,
+  "compared_values": 800000,
+  "max_abs_diff": 0,
+  "wall_seconds": 0.1549496,
+  "warmup_allocations": 7,
+  "warmup_live_bytes": 6400040,
+  "window_allocations": 0,
+  "window_denied_allocations": 0,
+  "window_denied_bytes": 0,
+  "window_live_delta_bytes": 0,
+  "live_bytes_end": 6408704,
+  "peak_live_bytes": 12809344,
+  "probe_control_passed": true,
+  "bytes_per_frame_slot": 640,
+  "bridge_footprint_bytes": 16000,
+  "derived": {
+    "allocations_per_1000_frames": 0.0,
+    "microseconds_per_frame": 15.49496
+  }
+}

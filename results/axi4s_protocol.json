@@ -1,0 +1,31 @@
+{
+  "status": "measured_axi4s_handshake",
+  "model": "BoundedFbankBridge behind an AXI4-Stream shim, one 32-bit beat per cycle",
+  "beat_bytes": 4,
+  "burst_bytes": 64,
+  "beats_per_burst": 16,
+  "beats_per_frame": 160,
+  "frame_bytes": 640,
+  "fifo_depth_samples": 512,
+  "samples": 64000,
+  "cycles": 140000,
+  "reference_frames": 398,
+  "arms": [
+    {"name": "always_ready", "cycles": 140000, "beats_in": 64000, "beats_out": 63680, "frames": 398, "stall_cycles": 0, "held_beats": 0, "held_mismatch": 0, "tlast_errors": 0, "tuser_errors": 0, "bubble_errors": 0, "tready_rule_errors": 0, "max_fifo_level": 159, "s_tready_low_cycles": 0, "first_s_tready_low": 0, "upstream_stall_cycles": 0, "allocations_in_tick_loop": 0, "denied_allocations": 0},
+    {"name": "stall_then_duty", "cycles": 140000, "beats_in": 64000, "beats_out": 63680, "frames": 398, "stall_cycles": 32336, "held_beats": 32336, "held_mismatch": 0, "tlast_errors": 0, "tuser_errors": 0, "bubble_errors": 0, "tready_rule_errors": 0, "max_fifo_level": 512, "s_tready_low_cycles": 31744, "first_s_tready_low": 1232, "upstream_stall_cycles": 31744, "allocations_in_tick_loop": 0, "denied_allocations": 0},
+    {"name": "long_stall", "cycles": 140000, "beats_in": 64000, "beats_out": 63680, "frames": 398, "stall_cycles": 6000, "held_beats": 6000, "held_mismatch": 0, "tlast_errors": 0, "tuser_errors": 0, "bubble_errors": 0, "tready_rule_errors": 0, "max_fifo_level": 512, "s_tready_low_cycles": 5648, "first_s_tready_low": 3472, "upstream_stall_cycles": 5648, "allocations_in_tick_loop": 0, "denied_allocations": 0}
+  ],
+  "derived": {
+    "all_frames_delivered": true,
+    "stall_invariant_frames": true,
+    "values_compared": 31840,
+    "protocol_violations": 0,
+    "backpressure_reached_upstream": true
+  },
+  "non_claims": [
+    "cycle counts are model cycles, not nanoseconds on any device",
+    "TVALID is combinational from a packet cursor; a registered version costs one cycle",
+    "no AXI interconnect, DMA descriptor engine, or clock-domain crossing is modelled",
+    "the FIFO is a host vector, not a BRAM with a real read latency"
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "status": "measured_interleaved_stage_budget",
+  "compiler": "clang 21.1.0 ",
+  "isa": "avx2+fma",
+  "source": "synthetic",
+  "audio_seconds": 120,
+  "frames": 11998,
+  "samples": 1920000,
+  "repeats": 9,
+  "pinned_to_one_core": true,
+  "protocol": "round-robin arms inside one process, median pass by wall time",
+  "frame_buffer_offset_mod64": 0,
+  "fft_input_offset_mod64": 0,
+  "arms": [
+    {
+      "name": "baseline",
+      "sample_domain_stages": "scalar_reference",
+      "log_mode": "std_log",
+      "wall_ms": 47.6381,
+      "wall_us_per_frame": 3.970503417236206,
+      "realtime_factor": 2518.992151240289,
+      "wall_spread_ms": [
+        51.6937,
+        39.9999
+      ],
+      "instrumented_total_ms": 34.4981,
+      "stages": [
+        {
+          "name": "dc_remove",
+          "total_ms": 4.8892,
+          "us_per_frame": 0.407501250208368,
+          "share_percent": 14.172374710491301
+        },
+        {
+          "name": "preemphasis_window",
+          "total_ms": 8.239,
+          "us_per_frame": 0.6866977829638273,
+          "share_percent": 23.88247468701175
+        },
+        {
+          "name": "fftw_execute",
+          "total_ms": 8.041,
+          "us_per_frame": 0.6701950325054176,
+          "share_percent": 23.308530034987434
+        },
+        {
+          "name": "power_spectrum",
+          "total_ms": 2.6887,
+          "us_per_frame": 0.22409568261376894,
+          "share_percent": 7.793762555039263
+        },
+        {
+          "name": "mel_projection",
+          "total_ms": 4.219,
+          "us_per_frame": 0.35164194032338725,
+          "share_percent": 12.229659024699911
+        },
+        {
+          "name": "log_compress",
+          "total_ms": 6.4212,
+          "us_per_frame": 0.5351891981996999,
+          "share_percent": 18.61319898777034
+        }
+      ]
+    },
+    {
+      "name": "simd",
+      "sample_domain_stages": "vector",
+      "log_mode": "std_log",
+      "wall_ms": 36.9564,
+      "wall_us_per_frame": 3.080213368894816,
+      "realtime_factor": 3247.0695197584178,
+      "wall_spread_ms": [
+        41.9942,
+        35.3547
+      ],
+      "instrumented_total_ms": 24.4496,
+      "stages": [
+        {
+          "name": "dc_remove",
+          "total_ms": 1.1205,
+          "us_per_frame": 0.09339056509418237,
+          "share_percent": 4.5828970617106215
+        },
+        {
+          "name": "preemphasis_window",
+          "total_ms": 3.19,
+          "us_per_frame": 0.26587764627437904,
+          "share_percent": 13.047248216739742
+        },
+        {
+          "name": "fftw_execute",
+          "total_ms": 7.516,
+          "us_per_frame": 0.6264377396232705,
+          "share_percent": 30.74078921536549
+        },
+        {
+          "name": "power_spectrum",
+          "total_ms": 2.5585,
+          "us_per_frame": 0.2132438739789965,
+          "share_percent": 10.464383875400824
+        },
+        {
+          "name": "mel_projection",
+          "total_ms": 4.0222,
+          "us_per_frame": 0.3352392065344224,
+          "share_percent": 16.450984883188273
+        },
+        {
+          "name": "log_compress",
+          "total_ms": 6.0424,
+          "us_per_frame": 0.5036172695449241,
+          "share_percent": 24.71369674759505
+        }
+      ]
+    },
+    {
+      "name": "simd_fastlog",
+      "sample_domain_stages": "vector",
+      "log_mode": "fast_float",
+      "wall_ms": 32.7483,
+      "wall_us_per_frame": 2.7294799133188863,
+      "realtime_factor": 3664.312345984372,
+      "wall_spread_ms": [
+        35.6345,
+        28.4366
+      ],
+      "instrumented_total_ms": 19.9152,
+      "stages": [
+        {
+          "name": "dc_remove",
+          "total_ms": 1.1408,
+          "us_per_frame": 0.09508251375229204,
+          "share_percent": 5.728287940869286
+        },
+        {
+          "name": "preemphasis_window",
+          "total_ms": 3.1691,
+          "us_per_frame": 0.2641356892815469,
+          "share_percent": 15.912970997027395
+        },
+        {
+          "name": "fftw_execute",
+          "total_ms": 7.6798,
+          "us_per_frame": 0.6400900150025004,
+          "share_percent": 38.56250502129027
+        },
+        {
+          "name": "power_spectrum",
+          "total_ms": 2.5543,
+          "us_per_frame": 0.21289381563593934,
+          "share_percent": 12.825881738571544
+        },
+        {
+          "name": "mel_projection",
+          "total_ms": 4.1979,
+          "us_per_frame": 0.3498833138856476,
+          "share_percent": 21.07887442757291
+        },
+        {
+          "name": "log_compress",
+          "total_ms": 1.1733,
+          "us_per_frame": 0.0977912985497583,
+          "share_percent": 5.891479874668595
+        }
+      ]
+    }
+  ],
+  "measurement_caveats": [
+    "each stage reads steady_clock twice; that overhead is included in the row",
+    "host-local decoder-only timing on a shared machine, not device latency",
+    "the vector path reorders the floating-point accumulation, so its features are not bit-identical to the scalar reference; the difference is published separately"
+  ],
+  "derived": {
+    "speedup_simd": 1.289035187410029,
+    "speedup_simd_fastlog": 1.4546739830769841,
+    "sample_domain_us_per_frame": {
+      "baseline": 1.0941990331721954,
+      "simd": 0.3592682113685614,
+      "simd_fastlog": 0.35921820303383895
+    },
+    "sample_domain_reduction_percent": {
+      "baseline": 0.0,
+      "simd": 67.16610045550799,
+      "simd_fastlog": 67.17067076979328
+    },
+    "log_us_per_frame": {
+      "baseline": 0.5351891981996999,
+      "simd": 0.5036172695449241,
+      "simd_fastlog": 0.0977912985497583
+    },
+    "log_reduction_percent": {
+      "baseline": 0.0,
+      "simd": 5.8992088706160795,
+      "simd_fastlog": 81.72771444589796
+    },
+    "control_stage_drift_percent": {
+      "fftw_execute:baseline_vs_simd": 6.749373272481841,
+      "power_spectrum:baseline_vs_simd": 4.962646744930622,
+      "mel_projection:baseline_vs_simd": 4.776003494636707,
+      "log_compress:baseline_vs_simd": 6.078500593728932,
+      "dc_remove:simd_vs_simd_fastlog": 1.795427409012506,
+      "preemphasis_window:simd_vs_simd_fastlog": 0.6573257221933921
+    },
+    "worst_control_stage_drift_percent": 6.749373272481841
+  }
+}

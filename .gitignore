@@ -7,6 +7,10 @@ __pycache__/
 !/results/p3_cost_observations.csv
 !/results/p3_frontend_summary.csv
 !/results/ctc_dev_sweep_results.csv
+!/results/ctc_beam_pareto.csv
 !/results/ctc_test_final_results.csv
 /data/round2_endpoint_eval/audio/
 /data/ctc_eval/audio/
+.workbuddy-ai/
+.pytest_cache/
+

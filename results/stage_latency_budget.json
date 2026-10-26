@@ -1,0 +1,134 @@
+{
+  "status": "measured_stage_latency_budget",
+  "compiler": "clang 21.1.0 ",
+  "isa": "avx2+fma",
+  "sample_domain_stages": "vector",
+  "log_mode": "fast_float",
+  "source": "synthetic",
+  "audio_seconds": 20,
+  "frames": 1998,
+  "samples": 320000,
+  "repeats": 5,
+  "pinned_to_one_core": true,
+  "mel_projection": "sparse_csr",
+  "statistic": "median pass by whole-pass wall time",
+  "wall_ms": 6.1497,
+  "wall_us_per_frame": 3.0779279279279277,
+  "realtime_factor": 3252.1911637966077,
+  "frame_buffer_offset_mod64": 0,
+  "fft_input_offset_mod64": 0,
+  "wall_spread_ms": [
+    6.1497,
+    6.1202
+  ],
+  "instrumented_total_ms": 3.6313999999999997,
+  "stages": [
+    {
+      "name": "dc_remove",
+      "total_ms": 0.2103,
+      "us_per_frame": 0.10525525525525525,
+      "share_percent": 5.791154926474638
+    },
+    {
+      "name": "preemphasis_window",
+      "total_ms": 0.625,
+      "us_per_frame": 0.3128128128128128,
+      "share_percent": 17.210993005452444
+    },
+    {
+      "name": "fftw_execute",
+      "total_ms": 1.307,
+      "us_per_frame": 0.6541541541541541,
+      "share_percent": 35.991628573002146
+    },
+    {
+      "name": "power_spectrum",
+      "total_ms": 0.5149,
+      "us_per_frame": 0.2577077077077077,
+      "share_percent": 14.179104477611942
+    },
+    {
+      "name": "mel_projection",
+      "total_ms": 0.7582,
+      "us_per_frame": 0.37947947947947946,
+      "share_percent": 20.87899983477447
+    },
+    {
+      "name": "log_compress",
+      "total_ms": 0.216,
+      "us_per_frame": 0.10810810810810811,
+      "share_percent": 5.948119182684365
+    }
+  ],
+  "measurement_caveats": [
+    "each stage reads steady_clock twice; that overhead is included in the row",
+    "host-local decoder-only timing on a shared machine, not device latency",
+    "FFTW is executed with the pre-created FFTW_ESTIMATE plan; no plan creation is timed",
+    "the vector path reorders the floating-point accumulation, so its features are not bit-identical to the scalar reference; the difference is published separately"
+  ],
+  "derived": {
+    "isa": "avx2+fma",
+    "sample_domain_stages": "vector",
+    "log_mode": "fast_float",
+    "frame_buffer_offset_mod64": 0,
+    "fft_input_offset_mod64": 0,
+    "hottest_stage": "fftw_execute",
+    "hottest_share_percent": 35.991628573002146,
+    "outside_stages_percent": 40.949965038944995,
+    "fixed_overhead_us_per_frame": {
+      "sparse": 1.2604104104104108,
+      "dense": 1.1605105105105105,
+      "relative_drift": 0.07925981813127936
+    },
+    "mel_stage_ratio": 57.6325507781588
+  },
+  "dense_reference": {
+    "mel_projection": "dense_table",
+    "stages": [
+      {
+        "name": "dc_remove",
+        "total_ms": 0.2802,
+        "us_per_frame": 0.14024024024024023,
+        "share_percent": 0.601406286219597
+      },
+      {
+        "name": "preemphasis_window",
+        "total_ms": 0.5923,
+        "us_per_frame": 0.29644644644644647,
+        "share_percent": 1.2712810254384985
+      },
+      {
+        "name": "fftw_execute",
+        "total_ms": 1.3734,
+        "us_per_frame": 0.6873873873873874,
+        "share_percent": 2.947792268001408
+      },
+      {
+        "name": "power_spectrum",
+        "total_ms": 0.4402,
+        "us_per_frame": 0.2203203203203203,
+        "share_percent": 0.944821724460623
+      },
+      {
+        "name": "mel_projection",
+        "total_ms": 43.697,
+        "us_per_frame": 21.87037037037037,
+        "share_percent": 93.78890253011325
+      },
+      {
+        "name": "log_compress",
+        "total_ms": 0.2077,
+        "us_per_frame": 0.10395395395395395,
+        "share_percent": 0.445796165766632
+      }
+    ],
+    "wall_ms": 48.9095,
+    "wall_us_per_frame": 24.47922922922923,
+    "realtime_factor": 408.91851276336905,
+    "instrumented_total_ms": 46.5908,
+    "wall_spread_ms": [
+      51.5654,
+      50.9312
+    ]
+  }
+}

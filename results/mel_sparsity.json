@@ -1,0 +1,36 @@
+{
+  "status": "measured_mel_sparsity",
+  "compiler": "clang 21.1.0 ",
+  "source": "synthetic",
+  "audio_seconds": 20,
+  "frames": 1998,
+  "repeats": 5,
+  "pinned_to_one_core": true,
+  "nonzeros": 501,
+  "dense_entries": 20560,
+  "dense_matrix_bytes": 164480,
+  "sparse_tap_bytes": 8016,
+  "macs_dense": 20560,
+  "macs_sparse": 501,
+  "mac_reduction": 41.03792415169661,
+  "compared_values": 159840,
+  "bit_mismatches": 0,
+  "max_abs_diff": 0,
+  "dense_us_per_frame": 25.446696696696698,
+  "sparse_us_per_frame": 2.8367867867867864,
+  "dense_realtime_factor": 393.3716870728229,
+  "sparse_realtime_factor": 3528.643765768627,
+  "speedup": 8.97025353305457,
+  "sparse_us_per_frame_spread": [
+    2.5780280280280277,
+    3.5455955955955956
+  ],
+  "dense_us_per_frame_spread": [
+    21.96986986986987,
+    25.63838838838839
+  ],
+  "non_claims": [
+    "whole-pass timing includes ring copies and frame pushes, not just the mel stage",
+    "host-local, not device latency"
+  ]
+}

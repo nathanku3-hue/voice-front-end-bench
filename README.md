@@ -64,7 +64,90 @@ Round 3:  Mandarin command -> text normalization -> visual pause hints
                                                 (no TTS acoustic or vocoder model)
 ```
 
-The **C++ Fbank does not feed the ASR**; Round 2's CER differences cannot be attributed to the Round 1 frontend. A separate [native-feature audit](docs/ROUND3_VALIDATION_REPORT.md) confirms that the existing two Fbank configurations are **not** directly interchangeable, even though matched feature configurations agree closely. The Rule2 experiment changes the endpoint finalization rule, *not* the model's weights or decoding algorithm. Paired tests, provenance and explicit non-claims matter more here than a single best-looking accuracy number.
+The original C++ Fbank does **not** feed the Round 2 **streaming Transducer**; its CER differences cannot be attributed to the C++ frontend. A separate [native-feature audit](docs/ROUND3_VALIDATION_REPORT.md) confirms that the existing two Fbank configurations are **not** directly interchangeable, even though matched feature configurations agree closely. The Rule2 experiment changes the endpoint finalization rule, *not* the model's weights or decoding algorithm. Paired tests, provenance and explicit non-claims matter more here than a single best-looking accuracy number.
+
+## New local extension — C++ frontend actually feeds an offline CTC model
+
+The bounded C++ audio feature interface now connects to the public Zipformer-CTC ONNX recognizer via a file-based bridge. On the existing 30-source Dev set, the custom path produced **30/30 matching final transcriptions** relative to the model-native frontend (both 2.94% CER on that set). Tests also cover downstream backpressure, variable read lengths, and corrupt-input cleanup. **This is offline model inference, not the Round 2 Transducer or a proven real-time system.** The native and custom feature configurations still differ; transcription matching is not numerical feature parity. See [implementation, commands, evidence and limits](docs/CPP_CTC_BOUNDARY_PROOF.md).
+
+### Backpressure under sustained load, and the beam-width cost curve
+
+Two follow-up audits measure the properties the integration above only asserted:
+
+- **Flow control.** A slow-consumer soak (consumer at exactly 50% of the input rate) over **1 hour of audio** — 57.6 M samples, 359,998 frames, 179,995 pause/resume cycles — held the frame watermark at exactly the configured capacity (1/4/64), kept live heap growth at **0 bytes** with RSS inside a **12 KiB band** across the whole hour, and stayed bit-identical to an unthrottled baseline: **max |diff| = 0, MAE = 0 over 28,799,840 feature values**. No Valgrind/ASan on this host; the leak audit uses exact `operator new` byte accounting instead.
+- **Beam width.** Sweeping widths 1–32 on the frozen 30-utterance Dev logits leaves CER at **2.94% at every width with 0/30 token sequences differing**, while decoder time grows **4.4×**. The posterior is near-one-hot (median top-1 = 0.9988; margin > 0.9 on 91% of frames), so beam width is a cost knob, not an accuracy knob — the opposite of the usual "narrow the beam, lose a little accuracy" trade-off.
+
+Full tables, the claim audit (including two draft numbers that do **not** survive the measurement), and reproduction commands: [docs/FLOW_CONTROL_AND_BEAM_PARETO.md](docs/FLOW_CONTROL_AND_BEAM_PARETO.md).
+
+### Firmware-facing audits: allocation discipline, control-loop chatter, a pure-C++ pipeline, and the latency budget
+
+Four further audits answer the questions a storage-firmware reviewer asks, each with a binary that
+asserts its own claim and a test that recomputes every ratio from the artifact:
+
+- **Zero allocations in steady state.** With the global `operator new` replaced by a counting probe
+  and allocation switched off, 10,000 frames run under real backpressure with **0 allocations,
+  0 denied requests and a 0-byte live delta**, while all 800,000 feature values stay bit-identical
+  to an unthrottled reference. The bridge's `sizeof` is **5,992 B**.
+- **Dual-watermark hysteresis.** A high/low watermark pair cuts pause/resume handshakes by
+  **67–86%** (39,988 → 5,714 transitions at a 4-frame ring) at bounded occupancy and zero dropped
+  frames, and the audit publishes what it costs: a longer stall per cycle.
+- **A pure-C++ decode path.** `tools/fbank_ctc_pipeline` runs WAV → bounded Fbank → greedy CTC →
+  byte-BPE UTF-8 with no Python in the process, reproducing the Python reference transcript
+  **30/30** on the Dev set, including CPython's UTF-8 replacement policy on the two utterances whose
+  greedy tail ends mid-character. The first argmax version was 4× slower than the numpy call it
+  replaced; splitting it into a max reduction plus a first-index search made it 3× faster
+  (1.43 → 0.46 µs per logit frame) — still not a speed-up over numpy, which is the point: the win is
+  dropping the runtime, not the arithmetic. **The acoustic model is still not in the binary** — the
+  posteriors are a frozen export.
+- **Stage budget, and the bottleneck it found.** The FFT is not the hot spot: the dense 80 × 257 mel
+  filterbank was **88.5%** of frame time because it re-reads 164 KB of coefficients every 10 ms.
+  Only 2.4% of those coefficients are non-zero, so the projection now walks a compressed CSR built
+  once at construction — **bit-exactly**, at **60× less time in that stage** and **6.7× end-to-end**
+  (25.5 → 4.1 µs/frame, 392× → 2,445× realtime on this host).
+
+Method, caveats (including why there is no ASan/Valgrind number) and the full claim audit:
+[docs/ZERO_ALLOC_AND_PIPELINE.md](docs/ZERO_ALLOC_AND_PIPELINE.md). This host has no MSVC, no g++
+and no CMake, so the C++ targets build with `zig cc`: `bash scripts/build_windows_zig.sh`, then
+`python scripts/run_firmware_audits.py` and `python scripts/run_pipeline_parity.py` regenerate every
+artifact above.
+
+### Depth pass: SIMD, a fast log, fixed-point feasibility, and an AXI4-Stream shim
+
+Four more audits aimed at the next question a chip or DSP interviewer asks after "it is fast" —
+*how do you know, and what does it cost*:
+
+- **Did the vectorisation actually happen?** The remaining **43.1%** of frame time was DC removal plus
+  pre-emphasis/window, both walking the ring through modulo indexing. Linearising the frame once and
+  then vectorising with 64-byte-aligned staging buffers and `target("avx2,fma")` took pre-emphasis
+  from **16.0 to 1.938 instructions per sample** — verified in the *emitted assembly*, not the source
+  — and the whole frame from **3.971 to 2.729 µs** (2,519× → 3,664× realtime). The three arms run
+  **round-robin inside one process** because this host's per-pass wall time is bimodal at ~3×, and
+  the audit publishes a **6.75% control-stage drift** between stages that run identical code. The 4
+  unaligned moves that remain are counted and explained.
+- **Does a fast log change what the model hears?** An IEEE-754 exponent-decomposition kernel with a
+  4-term `atanh` series is bounded at **6.29e-7 absolute / 1.65e-7 relative** error, and gives
+  **30/30 identical transcripts** with CER unchanged at **2.94%** on the hash-verified int8 CTC
+  model. A follow-up sweep injected noise over five orders of magnitude to find the tolerance
+  threshold and **found none**: transcripts flip at the smallest amplitude tested, the count does not
+  grow with amplitude (two characters of CER over five decades), and the damage is **three
+  utterances out of 30** rather than corpus spread. That reframed the claim honestly — the frontend
+  is not the fragile part.
+- **Would a fixed-point port survive?** Over 3,703 s of speech, **no stage overflows** its proposed
+  Q15/Q31/Q16.16 format (tightest headroom 0.9 dB) — but a plain Q15 FFT reaches only **55.4 dB
+  SQNR**, and the audit shows *why* instead of widening the word: the between-frame peak spread is
+  **54 dB**, so even Q23 leaves the quietest frames at 59 dB. **Block floating point** with a 16-bit
+  mantissa gives **70.6 dB guaranteed**, because one exponent per frame removes the between-frame
+  term and leaves only the measured within-frame crest factor.
+- **What happens when the consumer stalls?** An AXI4-Stream shim puts `TLAST` on every 64-byte burst
+  and `TUSER` on the beat completing a 640-byte frame, rather than forcing a 160-beat packet open
+  across ten cache lines. Across three `TREADY` scripts and 420,000 cycles: **0 protocol
+  violations**, **398/398 frames delivered bit-identically** in every arm, `S_AXIS_TREADY` dropping
+  exactly when the 512-sample FIFO saturates, **zero allocations** in the tick loop, and a **VCD**
+  waveform showing the beat held rather than dropped.
+
+Full numbers, the disassembly listings and the four stated non-claims:
+[docs/SIMD_LOG_FIXEDPOINT_AXI.md](docs/SIMD_LOG_FIXEDPOINT_AXI.md).
+
 
 ## Run locally: no model or dataset download
 

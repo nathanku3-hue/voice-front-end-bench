@@ -1,0 +1,300 @@
+{
+  "status": "measured_frontend_numeric_sensitivity",
+  "question": "does the SIMD sample-domain path or the fast log change any transcript?",
+  "scope": "model runs are real (int8 Zipformer CTC via onnxruntime); the ONNX file is hash-verified against the frozen export, so every variant is compared on the same weights the 2.94% baseline was measured with.",
+  "model": {
+    "file": "build\\win-zig\\model\\model.int8.onnx",
+    "sha256_observed": "e291b9c468b651e2697caa09bc684326c3addc6a019e78eb537cfd1a8248ca07",
+    "sha256_recorded_in_frozen_export": "e291b9c468b651e2697caa09bc684326c3addc6a019e78eb537cfd1a8248ca07",
+    "asset_matches_frozen_export": true,
+    "tokens_sha256": "6fed8c6c248516f38e7faa19404b57413e8ce259f1cbc1fa4aebc86eac32fdfd",
+    "execution_provider": "CPUExecutionProvider",
+    "intra_op_threads": 2
+  },
+  "protocol": {
+    "utterances": 3,
+    "variants": [
+      {
+        "name": "std",
+        "log": "std",
+        "scalar": false
+      },
+      {
+        "name": "fast",
+        "log": "fast",
+        "scalar": false
+      },
+      {
+        "name": "fastdouble",
+        "log": "fastdouble",
+        "scalar": false
+      },
+      {
+        "name": "scalar_std",
+        "log": "std",
+        "scalar": true
+      }
+    ],
+    "decoder": "C++ greedy collapse + C++ byte-BPE detokenizer (fbank_ctc_pipeline)",
+    "feature_dump": "C++ StreamingFbank, float32 little-endian",
+    "framing_alignment": "one replicated frame prepended and appended so the snip_edges=true frontend matches the snip_edges=false reference length; identical for every variant",
+    "same_model_every_variant": true
+  },
+  "reference": {
+    "frozen_export_cer": 0.029411764705882353,
+    "frozen_export_note": "from results/ctc_baseline_dev.json, same model file",
+    "frozen_logit_frames": {
+      "BAC009S0901W0455": 137,
+      "BAC009S0768W0427": 122,
+      "BAC009S0906W0212": 201,
+      "BAC009S0912W0412": 143,
+      "BAC009S0767W0305": 103,
+      "BAC009S0770W0460": 123,
+      "BAC009S0769W0340": 139,
+      "BAC009S0766W0327": 122,
+      "BAC009S0906W0317": 91,
+      "BAC009S0904W0153": 116,
+      "BAC009S0906W0160": 85,
+      "BAC009S0913W0265": 119,
+      "BAC009S0901W0490": 153,
+      "BAC009S0770W0466": 90,
+      "BAC009S0764W0287": 141,
+      "BAC009S0766W0296": 70,
+      "BAC009S0912W0366": 136,
+      "BAC009S0770W0212": 146,
+      "BAC009S0902W0222": 212,
+      "BAC009S0902W0140": 127,
+      "BAC009S0766W0333": 84,
+      "BAC009S0916W0399": 104,
+      "BAC009S0914W0169": 218,
+      "BAC009S0913W0448": 87,
+      "BAC009S0916W0428": 137,
+      "BAC009S0769W0183": 116,
+      "BAC009S0767W0301": 185,
+      "BAC009S0767W0300": 140,
+      "BAC009S0907W0212": 171,
+      "BAC009S0767W0317": 86
+    }
+  },
+  "summary": {
+    "std": {
+      "utterances": 3,
+      "transcripts_identical_to_std": 3,
+      "transcripts_differing": [],
+      "hypothesis_chars": 85,
+      "cer": 0.06976744186046512,
+      "cer_counts": {
+        "labeled_utterances": 3,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 1,
+        "reference_chars": 43,
+        "cer": 0.06976744186046512
+      }
+    },
+    "fast": {
+      "utterances": 3,
+      "transcripts_identical_to_std": 3,
+      "transcripts_differing": [],
+      "hypothesis_chars": 85,
+      "cer": 0.06976744186046512,
+      "cer_counts": {
+        "labeled_utterances": 3,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 1,
+        "reference_chars": 43,
+        "cer": 0.06976744186046512
+      },
+      "feature_mae_mean": 3.224475769838034e-08,
+      "feature_mae_max": 3.285242758856955e-08,
+      "feature_max_abs_overall": 9.5367431640625e-07,
+      "feature_bit_identical_fraction": 0.9159255898366606
+    },
+    "fastdouble": {
+      "utterances": 3,
+      "transcripts_identical_to_std": 3,
+      "transcripts_differing": [],
+      "hypothesis_chars": 85,
+      "cer": 0.06976744186046512,
+      "cer_counts": {
+        "labeled_utterances": 3,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 1,
+        "reference_chars": 43,
+        "cer": 0.06976744186046512
+      },
+      "feature_mae_mean": 2.939144772296372e-09,
+      "feature_mae_max": 3.329097900113696e-09,
+      "feature_max_abs_overall": 9.5367431640625e-07,
+      "feature_bit_identical_fraction": 0.9901996370235935
+    },
+    "scalar_std": {
+      "utterances": 3,
+      "transcripts_identical_to_std": 3,
+      "transcripts_differing": [],
+      "hypothesis_chars": 85,
+      "cer": 0.06976744186046512,
+      "cer_counts": {
+        "labeled_utterances": 3,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 1,
+        "reference_chars": 43,
+        "cer": 0.06976744186046512
+      },
+      "feature_mae_mean": 0.0,
+      "feature_mae_max": 0.0,
+      "feature_max_abs_overall": 0.0,
+      "feature_bit_identical_fraction": 1.0
+    }
+  },
+  "tolerance_argument": {
+    "feature_tolerance_used": 0.0001,
+    "why": "the model quantises its inputs far more coarsely than 1e-4; the measured feature MAE is reported next to every transcript count so the tolerance is a measurement, not an assumption"
+  },
+  "rows": [
+    {
+      "id": "BAC009S0901W0455",
+      "reference": "记者  李  焜  染  摄  十三  日  早晨  ",
+      "variants": {
+        "std": {
+          "frames": 553,
+          "frontend_frames": 551,
+          "logit_frames": 137,
+          "feature_abs_sum": 414273.7522605786,
+          "text": "记 者 李 坤 憉 摄 十 三 日 早 晨",
+          "cer": 0.18181818181818182
+        },
+        "fast": {
+          "frames": 553,
+          "frontend_frames": 551,
+          "logit_frames": 137,
+          "feature_abs_sum": 414273.75336365466,
+          "text": "记 者 李 坤 憉 摄 十 三 日 早 晨",
+          "cer": 0.18181818181818182,
+          "feature_mae_vs_std": 3.285242758856955e-08,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.9159255898366606
+        },
+        "fastdouble": {
+          "frames": 553,
+          "frontend_frames": 551,
+          "logit_frames": 137,
+          "feature_abs_sum": 414273.752255393,
+          "text": "记 者 李 坤 憉 摄 十 三 日 早 晨",
+          "cer": 0.18181818181818182,
+          "feature_mae_vs_std": 3.329097900113696e-09,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.9901996370235935
+        },
+        "scalar_std": {
+          "frames": 553,
+          "frontend_frames": 551,
+          "logit_frames": 137,
+          "feature_abs_sum": 414273.7522605786,
+          "text": "记 者 李 坤 憉 摄 十 三 日 早 晨",
+          "cer": 0.18181818181818182,
+          "feature_mae_vs_std": 0.0,
+          "feature_max_abs_vs_std": 0.0,
+          "feature_bit_identical_fraction": 1.0
+        }
+      }
+    },
+    {
+      "id": "BAC009S0768W0427",
+      "reference": "各样  都  平衡  得好  处理  得好  ",
+      "variants": {
+        "std": {
+          "frames": 496,
+          "frontend_frames": 494,
+          "logit_frames": 122,
+          "feature_abs_sum": 375394.8417541012,
+          "text": "各 样 都 平 衡 得 好 处 理 得 好",
+          "cer": 0.0
+        },
+        "fast": {
+          "frames": 496,
+          "frontend_frames": 494,
+          "logit_frames": 122,
+          "feature_abs_sum": 375394.84277368337,
+          "text": "各 样 都 平 衡 得 好 处 理 得 好",
+          "cer": 0.0,
+          "feature_mae_vs_std": 3.226448287848036e-08,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.9525556680161943
+        },
+        "fastdouble": {
+          "frames": 496,
+          "frontend_frames": 494,
+          "logit_frames": 122,
+          "feature_abs_sum": 375394.841759108,
+          "text": "各 样 都 平 衡 得 好 处 理 得 好",
+          "cer": 0.0,
+          "feature_mae_vs_std": 2.515702112483592e-09,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.9958248987854251
+        },
+        "scalar_std": {
+          "frames": 496,
+          "frontend_frames": 494,
+          "logit_frames": 122,
+          "feature_abs_sum": 375394.8417541012,
+          "text": "各 样 都 平 衡 得 好 处 理 得 好",
+          "cer": 0.0,
+          "feature_mae_vs_std": 0.0,
+          "feature_max_abs_vs_std": 0.0,
+          "feature_bit_identical_fraction": 1.0
+        }
+      }
+    },
+    {
+      "id": "BAC009S0906W0212",
+      "reference": "加强  新疆  黄淮海  地区  长江  流域  棉花  生产  基地  建设  ",
+      "variants": {
+        "std": {
+          "frames": 811,
+          "frontend_frames": 809,
+          "logit_frames": 201,
+          "feature_abs_sum": 551717.8005476331,
+          "text": "加 强 新 疆 黄 淮 海 地 区 长 江 流 域 棉 花 生 生 产 基 地 建 设",
+          "cer": 0.047619047619047616
+        },
+        "fast": {
+          "frames": 811,
+          "frontend_frames": 809,
+          "logit_frames": 201,
+          "feature_abs_sum": 551717.8020483636,
+          "text": "加 强 新 疆 黄 淮 海 地 区 长 江 流 域 棉 花 生 生 产 基 地 建 设",
+          "cer": 0.047619047619047616,
+          "feature_mae_vs_std": 3.1617362628091124e-08,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.941331891223733
+        },
+        "fastdouble": {
+          "frames": 811,
+          "frontend_frames": 809,
+          "logit_frames": 201,
+          "feature_abs_sum": 551717.8005547409,
+          "text": "加 强 新 疆 黄 淮 海 地 区 长 江 流 域 棉 花 生 生 产 基 地 建 设",
+          "cer": 0.047619047619047616,
+          "feature_mae_vs_std": 2.972634304291828e-09,
+          "feature_max_abs_vs_std": 9.5367431640625e-07,
+          "feature_bit_identical_fraction": 0.9935568603213845
+        },
+        "scalar_std": {
+          "frames": 811,
+          "frontend_frames": 809,
+          "logit_frames": 201,
+          "feature_abs_sum": 551717.8005476331,
+          "text": "加 强 新 疆 黄 淮 海 地 区 长 江 流 域 棉 花 生 生 产 基 地 建 设",
+          "cer": 0.047619047619047616,
+          "feature_mae_vs_std": 0.0,
+          "feature_max_abs_vs_std": 0.0,
+          "feature_bit_identical_fraction": 1.0
+        }
+      }
+    }
+  ]
+}
